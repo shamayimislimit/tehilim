@@ -1,0 +1,30 @@
+{
+  "dedication": {
+    "hebrew": "לעילוי נשמת יצחק בן בנימין",
+    "french": "À la mémoire de Itshak ben Binyamin",
+    "english": "In memory of Itshak ben Binyamin"
+  },
+  "app": {
+    "iconPath": "/app-icon.png",
+    "title": {
+      "hebrew": "תהילים",
+      "french": "Tehilim",
+      "english": "Tehilim"
+    },
+    "shortName": "Tehilim"
+  },
+  "settings": {
+    "supportedLanguages": ["hebrew", "french", "english"],
+    "defaults": {
+      "language": "hebrew",
+      "fontSize": 22,
+      "phoneticMode": false,
+      "prayerFont": "frank",
+      "showCantillation": true,
+      "showNikkud": true,
+      "showVerseNumbers": true,
+      "mode": "week",
+      "lastReadChapter": 1
+    }
+  }
+}
