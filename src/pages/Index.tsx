@@ -8,21 +8,20 @@ import { NumberGrid } from '@/components/NumberGrid';
 import { FavoritesView } from '@/components/FavoritesView';
 import { Footer } from '@/components/Footer';
 import { useTehilimSettings } from '@/hooks/useTehilimSettings';
-import { getMonthlySchedule, getWeeklySchedule } from '@/data/tehilimData';
+import { getTodayInfo } from '@/lib/hebrewDate';
 import { t } from '@/data/translations';
 import { ReadMode } from '@/types/tehilim';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
-const todayWeekday = () => new Date().getDay() + 1;
-const todayMonthDay = () => Math.min(new Date().getDate(), 30);
-
 const Index = () => {
   const { settings, updateSettings } = useTehilimSettings();
   const { language, mode, lastReadChapter } = settings;
 
-  const [weekDay, setWeekDay] = useState(todayWeekday);
-  const [monthDay, setMonthDay] = useState(todayMonthDay);
+  const todayInfo = useMemo(() => getTodayInfo(language), [language]);
+  const [weekDay, setWeekDay] = useState(todayInfo.weekday);
+  const [monthDay, setMonthDay] = useState(Math.min(todayInfo.monthDay, 30));
+  // Used for "Par numéro" and "Favoris → open chapter" flows
   const [chapterOpen, setChapterOpen] = useState<number | null>(null);
 
   useEffect(() => {
@@ -47,17 +46,13 @@ const Index = () => {
 
   const subtitle = useMemo(() => {
     if (chapterOpen) return `${t('chapter', language)} ${chapterOpen}`;
-    if (mode === 'week') {
-      const sched = getWeeklySchedule().find((d) => d.index === weekDay);
-      return sched ? `${t('day', language)} ${weekDay} · ${sched.range}` : '';
-    }
-    if (mode === 'month') {
-      const sched = getMonthlySchedule().find((d) => d.index === monthDay);
-      return sched ? `${t('day', language)} ${monthDay} · ${sched.range}` : '';
-    }
+    if (mode === 'week') return todayInfo.hebrewDateFull;
+    if (mode === 'month') return todayInfo.hebrewDateFull;
     if (mode === 'favorites') return t('favorites', language);
     return '';
-  }, [mode, weekDay, monthDay, chapterOpen, language]);
+  }, [mode, chapterOpen, language, todayInfo]);
+
+  const showBackButton = chapterOpen !== null;
 
   return (
     <div className="min-h-screen relative">
@@ -74,42 +69,31 @@ const Index = () => {
         </div>
 
         <main className="p-4 space-y-6">
+          {showBackButton && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setChapterOpen(null)}
+              className="gap-1.5 font-assistant text-muted-foreground"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {language === 'hebrew' ? 'חזרה' : language === 'french' ? 'Retour' : 'Back'}
+            </Button>
+          )}
+
           {chapterOpen ? (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setChapterOpen(null)}
-                className="gap-1.5 font-assistant text-muted-foreground"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                {language === 'hebrew' ? 'חזרה' : language === 'french' ? 'Retour' : 'Back'}
-              </Button>
-              <ChapterReader chapter={chapterOpen} onChange={openChapter} settings={settings} />
-            </>
+            <ChapterReader chapter={chapterOpen} onChange={openChapter} settings={settings} />
           ) : mode === 'week' ? (
-            <DaySelector
-              mode="week"
-              selectedDay={weekDay}
-              onDayChange={setWeekDay}
-              onPickChapter={openChapter}
-              language={language}
-            />
+            <DaySelector mode="week" selectedDay={weekDay} onDayChange={setWeekDay} settings={settings} />
           ) : mode === 'month' ? (
-            <DaySelector
-              mode="month"
-              selectedDay={monthDay}
-              onDayChange={setMonthDay}
-              onPickChapter={openChapter}
-              language={language}
-            />
+            <DaySelector mode="month" selectedDay={monthDay} onDayChange={setMonthDay} settings={settings} />
           ) : mode === 'number' ? (
             <NumberGrid language={language} onPickChapter={openChapter} />
           ) : (
             <FavoritesView settings={settings} onOpenChapter={openChapter} />
           )}
 
-          {!chapterOpen && lastReadChapter > 0 && mode !== 'favorites' && (
+          {!chapterOpen && mode === 'number' && lastReadChapter > 0 && (
             <div className="rounded-2xl border border-border bg-card/40 p-3 flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
                 {t('continueReading', language)}
