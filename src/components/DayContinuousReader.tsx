@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { t } from '@/data/translations';
@@ -6,24 +5,13 @@ import { t } from '@/data/translations';
 interface DayContinuousReaderProps {
   chapters: number[];
   settings: TehilimSettings;
-  /** Bumped when the selected day changes, to scroll the reader into view. */
-  scrollKey: string | number;
 }
 
-export const DayContinuousReader = ({ chapters, settings, scrollKey }: DayContinuousReaderProps) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollKey]);
-
+export const DayContinuousReader = ({ chapters, settings }: DayContinuousReaderProps) => {
   const language = settings.language;
 
   return (
-    <div ref={ref} className="space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
         <span>{t('chaptersOfTheDay', language)}</span>
         <span dir="ltr">{chapters.length} {t('chapter', language)}{chapters.length > 1 ? 's' : ''}</span>
