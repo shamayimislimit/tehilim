@@ -36,7 +36,7 @@ export const NumberGrid = ({ language, onPickChapter }: NumberGridProps) => {
               )}
             >
               {c}
-              {done && <Check className="absolute top-0.5 right-0.5 w-2.5 h-2.5 text-primary" />}
+              {done && <Check className="absolute top-0.5 end-0.5 w-2.5 h-2.5 text-primary" />}
             </button>
           );
         })}

@@ -47,14 +47,14 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
       />
 
       <main className="p-4 space-y-4">
-        {/* Day navigation */}
-        <div className="flex items-center justify-between gap-3" dir="ltr">
+        {/* Day navigation — follows reading direction, arrows mirrored in RTL */}
+        <div className="flex items-center justify-between gap-3">
           <Link
             to={day > 1 ? `/${cycle}/${day - 1}` : `/${cycle}`}
             aria-disabled={day <= 1}
             className={`p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors ${day <= 1 ? 'opacity-30 pointer-events-none' : ''}`}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
           </Link>
 
           <div className="text-center">
@@ -74,7 +74,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
             aria-disabled={day >= max}
             className={`p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors ${day >= max ? 'opacity-30 pointer-events-none' : ''}`}
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 rtl:rotate-180" />
           </Link>
         </div>
 

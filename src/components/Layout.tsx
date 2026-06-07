@@ -16,6 +16,15 @@ export const useAppSettings = () => useOutletContext<AppOutletContext>();
 export const Layout = () => {
   const { settings, updateSettings } = useTehilimSettings();
 
+  // Keep <html dir/lang> in sync with the UI language so Tailwind `rtl:`
+  // variants, flex direction and native scrollbars follow the right direction.
+  useEffect(() => {
+    const isRtl = settings.language === 'hebrew';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.documentElement.lang =
+      settings.language === 'hebrew' ? 'he' : settings.language === 'french' ? 'fr' : 'en';
+  }, [settings.language]);
+
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();

@@ -55,7 +55,7 @@ export const AddFavoriteDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent dir={isRtl ? 'rtl' : 'ltr'} className="rounded-2xl">
-        <DialogHeader className={isRtl ? 'text-right' : 'text-left'}>
+        <DialogHeader className="text-start sm:text-start">
           <DialogTitle className="font-cormorant text-2xl flex items-center gap-2">
             <Star className="w-5 h-5 text-primary" />
             {t('addToFavorites', language)}
@@ -92,7 +92,7 @@ export const AddFavoriteDialog = ({
             )}
           </div>
 
-          <DialogFooter className={isRtl ? 'sm:justify-start gap-2' : 'sm:justify-end gap-2'}>
+          <DialogFooter className="sm:justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {t('cancel', language)}
             </Button>

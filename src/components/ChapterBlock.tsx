@@ -47,7 +47,7 @@ export const ChapterBlock = ({ chapter, settings, compact = false }: ChapterBloc
         compact ? 'pt-6 pb-2 border-t border-border/40 first:border-t-0 first:pt-0' : ''
       )}
     >
-      <header className="flex items-center justify-between gap-3 mb-3" dir="ltr">
+      <header className="flex items-center justify-between gap-3 mb-3">
         <p className="text-xs uppercase tracking-[0.2em] font-assistant text-muted-foreground">
           {t('chapter', language)} {chap.chapter}
         </p>

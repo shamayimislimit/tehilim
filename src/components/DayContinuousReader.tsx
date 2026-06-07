@@ -9,12 +9,19 @@ interface DayContinuousReaderProps {
 
 export const DayContinuousReader = ({ chapters, settings }: DayContinuousReaderProps) => {
   const language = settings.language;
+  const n = chapters.length;
+  const countLabel =
+    language === 'hebrew'
+      ? n === 1 ? 'פרק אחד' : `${n} פרקים`
+      : language === 'french'
+        ? `${n} chapitre${n > 1 ? 's' : ''}`
+        : `${n} chapter${n > 1 ? 's' : ''}`;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
         <span>{t('chaptersOfTheDay', language)}</span>
-        <span dir="ltr">{chapters.length} {t('chapter', language)}{chapters.length > 1 ? 's' : ''}</span>
+        <span>{countLabel}</span>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/40 p-4 md:p-5 space-y-2">

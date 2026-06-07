@@ -9,7 +9,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Language, PrayerFont, TehilimSettings } from '@/types/tehilim';
 import { t } from '@/data/translations';
 import config from '@/config.json';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface SettingsToolbarProps {
@@ -67,7 +66,7 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
           align={isRtl ? 'end' : 'start'}
           dir={isRtl ? 'rtl' : 'ltr'}
         >
-          <div className={cn('flex gap-2', isRtl && 'flex-row-reverse')}>
+          <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleShare} className="flex-1 gap-2 font-assistant">
               <Share2 className="w-4 h-4" />
               {t('share', language)}
@@ -80,7 +79,7 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
           {/* Font size */}
           <div className="space-y-3">
-            <div className={cn('flex items-center gap-2', isRtl && 'flex-row-reverse')}>
+            <div className="flex items-center gap-2">
               <Type className="w-4 h-4 text-primary" />
               <Label className="text-xs font-cormorant font-semibold">
                 {t('fontSize', language)} · {fontSize}px
@@ -97,7 +96,7 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
           {/* Prayer font */}
           <div className="space-y-3">
-            <Label className={cn('text-xs font-cormorant font-semibold flex items-center gap-2', isRtl && 'flex-row-reverse')}>
+            <Label className="text-xs font-cormorant font-semibold flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-primary" />
               {t('prayerFont', language)}
             </Label>
@@ -120,15 +119,15 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
           {/* Display toggles */}
           <div className="space-y-2">
-            <div className={cn('flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30', isRtl && 'flex-row-reverse')}>
+            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
               <Label className="text-xs font-cormorant font-semibold">{t('showCantillation', language)}</Label>
               <Switch checked={showCantillation} onCheckedChange={(v) => onUpdate({ showCantillation: v })} />
             </div>
-            <div className={cn('flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30', isRtl && 'flex-row-reverse')}>
+            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
               <Label className="text-xs font-cormorant font-semibold">{t('showNikkud', language)}</Label>
               <Switch checked={showNikkud} onCheckedChange={(v) => onUpdate({ showNikkud: v })} />
             </div>
-            <div className={cn('flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30', isRtl && 'flex-row-reverse')}>
+            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
               <Label className="text-xs font-cormorant font-semibold">{t('showVerseNumbers', language)}</Label>
               <Switch checked={showVerseNumbers} onCheckedChange={(v) => onUpdate({ showVerseNumbers: v })} />
             </div>
@@ -136,7 +135,7 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
           {/* Language */}
           <div className="space-y-3">
-            <Label className={cn('text-xs font-cormorant font-semibold flex items-center gap-2', isRtl && 'flex-row-reverse')}>
+            <Label className="text-xs font-cormorant font-semibold flex items-center gap-2">
               <Languages className="w-4 h-4 text-primary" />
               {t('language', language)}
             </Label>
