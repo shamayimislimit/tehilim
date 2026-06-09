@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, useOutletContext } from 'react-router-dom';
 import { SettingsToolbar } from '@/components/SettingsToolbar';
-import { Footer } from '@/components/Footer';
 import { useTehilimSettings } from '@/hooks/useTehilimSettings';
 import { TehilimSettings } from '@/types/tehilim';
 
@@ -41,12 +40,8 @@ export const Layout = () => {
 
       <SettingsToolbar settings={settings} onUpdate={updateSettings} />
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto pb-24">
         <Outlet context={{ settings, updateSettings } satisfies AppOutletContext} />
-
-        <div className="px-4">
-          <Footer language={settings.language} />
-        </div>
       </div>
     </div>
   );

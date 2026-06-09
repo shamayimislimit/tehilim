@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useAppSettings } from '@/components/Layout';
+import { useInstanceLink } from '@/context/instance';
 import { getTodayInfo } from '@/lib/hebrewDate';
 import { getWeeklySchedule, getMonthlySchedule } from '@/data/tehilimData';
 import { useFavorites } from '@/hooks/useFavorites';
 import { t } from '@/data/translations';
-import { Button } from '@/components/ui/button';
 import {
   CalendarDays,
   CalendarRange,
@@ -17,10 +17,11 @@ import {
 } from 'lucide-react';
 
 const Home = () => {
-  const { settings, updateSettings } = useAppSettings();
-  const { language, lastReadChapter } = settings;
+  const { settings } = useAppSettings();
+  const { language } = settings;
   const isRtl = language === 'hebrew';
   const { favorites } = useFavorites();
+  const iLink = useInstanceLink();
 
   const today = useMemo(() => getTodayInfo(language), [language]);
   const weekDayIndex = today.weekday;
@@ -89,7 +90,7 @@ const Home = () => {
           <div className="border-t border-border/60 divide-y divide-border/60">
             {todayWeek && (
               <Link
-                to={`/week/${weekDayIndex}`}
+                to={iLink(`/week/${weekDayIndex}`)}
                 className="flex items-center justify-between gap-3 px-4 md:px-5 py-3 hover:bg-primary/5 transition-colors"
               >
                 <span className="flex items-center gap-2.5 min-w-0">
@@ -104,7 +105,7 @@ const Home = () => {
             )}
             {todayMonth && (
               <Link
-                to={`/month/${monthDayIndex}`}
+                to={iLink(`/month/${monthDayIndex}`)}
                 className="flex items-center justify-between gap-3 px-4 md:px-5 py-3 hover:bg-primary/5 transition-colors"
               >
                 <span className="flex items-center gap-2.5 min-w-0">
@@ -129,7 +130,7 @@ const Home = () => {
             {navCards.map(({ to, Icon, title, desc }) => (
               <Link
                 key={to}
-                to={to}
+                to={iLink(to)}
                 className="group rounded-2xl border border-border bg-card/60 p-4 flex items-center gap-3.5 hover:border-primary/40 hover:bg-card/80 transition-all"
               >
                 <span className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
@@ -149,19 +150,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Continue reading */}
-        {lastReadChapter > 0 && (
-          <div className="rounded-2xl border border-border bg-card/40 p-3 flex items-center justify-between gap-3">
-            <p className="text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
-              {t('continueReading', language)}
-            </p>
-            <Button size="sm" asChild className="font-assistant">
-              <Link to={`/perek/${lastReadChapter}`}>
-                {t('chapter', language)} {lastReadChapter}
-              </Link>
-            </Button>
-          </div>
-        )}
       </main>
     </div>
   );

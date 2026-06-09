@@ -2,7 +2,7 @@ import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { t } from '@/data/translations';
+import { getChapter } from '@/data/tehilimData';
 
 interface ChapterReaderProps {
   chapter: number;
@@ -23,8 +23,11 @@ export const ChapterReader = ({ chapter, onChange, settings }: ChapterReaderProp
       >
         <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
       </Button>
-      <span className="text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
-        {t('chapter', settings.language)} <span dir="ltr" className="inline-block">{chapter} / 150</span>
+      <span className="flex flex-col items-center gap-1">
+        <span className="font-david text-xl leading-none" dir="rtl">{getChapter(chapter)?.chapterHebrew}</span>
+        <span className="text-[10px] uppercase tracking-[0.18em] font-assistant text-muted-foreground leading-none" dir="ltr">
+          {chapter} / 150
+        </span>
       </span>
       <Button
         variant="ghost"

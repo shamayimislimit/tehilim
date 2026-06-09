@@ -26,11 +26,10 @@ export interface ScheduleDay {
   range: string;            // "1-29"
 }
 
-export interface FavoriteVerse {
+export interface FavoritePerek {
   id: string;               // uuid-ish
   chapter: number;
-  verse: number;            // 1-based; 0 means whole chapter
-  collection: string;       // user-given name ("Pour Yehouda", "Guérison"…)
+  name: string;             // optional user label ("Pour Yehouda", "Guérison"…) — '' = none
   addedAt: number;          // epoch ms
 }
 
@@ -43,5 +42,4 @@ export interface TehilimSettings {
   showNikkud: boolean;
   showVerseNumbers: boolean;
   mode: ReadMode;
-  lastReadChapter: number;  // for "continuer"
 }

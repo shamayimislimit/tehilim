@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useAppSettings } from '@/components/Layout';
+import { useInstanceLink } from '@/context/instance';
 import { PageHeader } from '@/components/PageHeader';
 import { DayContinuousReader } from '@/components/DayContinuousReader';
 import { getMonthlySchedule, getWeeklySchedule } from '@/data/tehilimData';
@@ -16,6 +17,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
   const { settings } = useAppSettings();
   const { language } = settings;
   const isRtl = language === 'hebrew';
+  const iLink = useInstanceLink();
   const { day: dayParam } = useParams();
   const day = Number(dayParam);
 
@@ -25,11 +27,11 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
   const todayIndex = cycle === 'week' ? today.weekday : Math.min(today.monthDay, 30);
 
   if (!Number.isInteger(day) || day < 1 || day > max) {
-    return <Navigate to={`/${cycle}`} replace />;
+    return <Navigate to={iLink(`/${cycle}`)} replace />;
   }
 
   const sched = days.find((d) => d.index === day);
-  if (!sched) return <Navigate to={`/${cycle}`} replace />;
+  if (!sched) return <Navigate to={iLink(`/${cycle}`)} replace />;
 
   const isToday = day === todayIndex;
   const title =
@@ -43,14 +45,14 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
         language={language}
         title={title}
         subtitle={isToday ? today.hebrewDateFull : sched.range}
-        backTo={`/${cycle}`}
+        backTo={iLink(`/${cycle}`)}
       />
 
       <main className="p-4 space-y-4">
         {/* Day navigation — follows reading direction, arrows mirrored in RTL */}
         <div className="flex items-center justify-between gap-3">
           <Link
-            to={day > 1 ? `/${cycle}/${day - 1}` : `/${cycle}`}
+            to={iLink(day > 1 ? `/${cycle}/${day - 1}` : `/${cycle}`)}
             aria-disabled={day <= 1}
             className={`p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors ${day <= 1 ? 'opacity-30 pointer-events-none' : ''}`}
           >
@@ -70,7 +72,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
           </div>
 
           <Link
-            to={day < max ? `/${cycle}/${day + 1}` : `/${cycle}`}
+            to={iLink(day < max ? `/${cycle}/${day + 1}` : `/${cycle}`)}
             aria-disabled={day >= max}
             className={`p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors ${day >= max ? 'opacity-30 pointer-events-none' : ''}`}
           >

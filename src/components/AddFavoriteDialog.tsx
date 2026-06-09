@@ -10,6 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Language } from '@/types/tehilim';
+import { getChapter } from '@/data/tehilimData';
 import { t } from '@/data/translations';
 import { Star } from 'lucide-react';
 
@@ -17,40 +18,31 @@ interface AddFavoriteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   chapter: number;
-  verse: number;        // 0 = whole chapter
   language: Language;
-  knownCollections: string[];
-  onSave: (collection: string) => void;
+  /** Name is optional — '' means the list falls back to "פרק א׳". */
+  onSave: (name: string) => void;
 }
 
 export const AddFavoriteDialog = ({
   open,
   onOpenChange,
   chapter,
-  verse,
   language,
-  knownCollections,
   onSave,
 }: AddFavoriteDialogProps) => {
-  const [collection, setCollection] = useState('');
+  const [name, setName] = useState('');
   const isRtl = language === 'hebrew';
+  const hebrew = getChapter(chapter)?.chapterHebrew ?? String(chapter);
 
   useEffect(() => {
-    if (open) setCollection('');
+    if (open) setName('');
   }, [open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const name = collection.trim();
-    if (!name) return;
-    onSave(name);
+    onSave(name.trim());
     onOpenChange(false);
   };
-
-  const subjectLabel =
-    verse === 0
-      ? `${t('chapter', language)} ${chapter} — ${t('wholeChapter', language)}`
-      : `${t('chapter', language)} ${chapter} · ${t('verse', language)} ${verse}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,7 +52,11 @@ export const AddFavoriteDialog = ({
             <Star className="w-5 h-5 text-primary" />
             {t('addToFavorites', language)}
           </DialogTitle>
-          <DialogDescription className="font-assistant text-sm">{subjectLabel}</DialogDescription>
+          <DialogDescription className="font-assistant text-sm">
+            <span className="font-david text-base text-foreground" dir="rtl">פרק {hebrew}</span>
+            <span className="mx-1.5 text-muted-foreground/50" aria-hidden>·</span>
+            <span dir="ltr">{t('chapter', language)} {chapter}</span>
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -70,33 +66,19 @@ export const AddFavoriteDialog = ({
             </label>
             <Input
               autoFocus
-              value={collection}
-              onChange={(e) => setCollection(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder={t('favoriteNameHint', language)}
               className="font-assistant"
               dir={isRtl ? 'rtl' : 'ltr'}
             />
-            {knownCollections.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {knownCollections.map((name) => (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={() => setCollection(name)}
-                    className="text-xs font-assistant px-2.5 py-1 rounded-full bg-muted hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           <DialogFooter className="sm:justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {t('cancel', language)}
             </Button>
-            <Button type="submit" disabled={!collection.trim()}>
+            <Button type="submit">
               {t('save', language)}
             </Button>
           </DialogFooter>

@@ -8,10 +8,12 @@ interface PageHeaderProps {
   title: string;
   subtitle?: string;
   backTo: string;
+  /** Force the Hebrew prayer font for the title even in FR/EN (e.g. "פרק קכ״א"). */
+  titleHebrew?: boolean;
 }
 
 /** Compact sticky header used on inner pages (picker / reading / favorites). */
-export const PageHeader = ({ language, title, subtitle, backTo }: PageHeaderProps) => {
+export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = false }: PageHeaderProps) => {
   const isRtl = language === 'hebrew';
 
   return (
@@ -31,10 +33,11 @@ export const PageHeader = ({ language, title, subtitle, backTo }: PageHeaderProp
         <div className="flex-1 min-w-0 text-center">
           <p
             className={
-              language === 'hebrew'
+              titleHebrew || language === 'hebrew'
                 ? 'font-david text-lg leading-tight truncate'
                 : 'font-cormorant text-lg leading-tight truncate'
             }
+            dir={titleHebrew ? 'rtl' : undefined}
           >
             {title}
           </p>

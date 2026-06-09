@@ -1,5 +1,5 @@
 import { Language } from '@/types/tehilim';
-import config from '@/config.json';
+import { useInstance } from '@/context/instance';
 import { t } from '@/data/translations';
 
 interface HeaderProps {
@@ -8,17 +8,28 @@ interface HeaderProps {
 }
 
 export const Header = ({ language, subtitle }: HeaderProps) => {
+  const instance = useInstance();
   const isRtl = language === 'hebrew';
-  const title = config.app.title[language];
-  const dedication = config.dedication[language];
+  const title = instance.title[language];
+  const dedication = instance.dedication[language];
+  const portrait = instance.portrait;
 
   return (
     <header className="relative">
-      <div className="absolute top-5 right-5 z-10">
+      {/* logical start: stays top-right in Hebrew, moves left in FR/EN (settings now sits at end) */}
+      <div className="absolute top-5 start-5 z-10">
         <span className="text-xs font-frank text-muted-foreground/70 tracking-wide">בס&quot;ד</span>
       </div>
 
       <div className="text-center pt-14 pb-6 px-4" dir={isRtl ? 'rtl' : 'ltr'}>
+        {portrait ? (
+          <img
+            src={portrait}
+            alt={dedication}
+            className="mx-auto mb-5 h-28 w-28 md:h-32 md:w-32 rounded-full object-cover ring-2 ring-primary/30 shadow-[var(--shadow-soft)]"
+          />
+        ) : null}
+
         <h1
           className={
             language === 'hebrew'
