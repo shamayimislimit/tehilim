@@ -30,10 +30,16 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
   const handleShare = async () => {
     const title = `${instance.title.hebrew} - ${instance.dedication.hebrew}`;
+    // Always share THIS instance's link (with its slug), not the current deep
+    // URL or the default app link. base = '/tehilim/'; slug '' = default.
+    const shareUrl =
+      window.location.origin +
+      import.meta.env.BASE_URL +
+      (instance.slug ? `${instance.slug}/` : '');
     if (navigator.share) {
-      try { await navigator.share({ title, url: window.location.href }); } catch { /* */ }
+      try { await navigator.share({ title, url: shareUrl }); } catch { /* */ }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(shareUrl);
       toast.success(t('share', language) + ' ✓');
     }
   };
