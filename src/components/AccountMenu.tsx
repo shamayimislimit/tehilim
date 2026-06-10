@@ -27,8 +27,7 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
  * works inside an installed PWA). When logged in it shows the account + logout.
  */
 export const AccountMenu = ({ language }: { language: Language }) => {
-  const { user, ready, requestCode, verifyCode, logout } = useAuth();
-  const [open, setOpen] = useState(false);
+  const { user, ready, requestCode, verifyCode, logout, loginOpen: open, setLoginOpen: setOpen } = useAuth();
   const [step, setStep] = useState<'email' | 'code'>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');

@@ -56,6 +56,22 @@ export const translations = {
     french: 'Parcourir tous les Tehilim',
     english: 'Browse all Tehilim',
   } as Trans,
+  loginCta: { hebrew: 'התחברות', french: 'Se connecter', english: 'Log in' } as Trans,
+  favNotLoggedTitle: {
+    hebrew: 'אינך מחובר/ת',
+    french: 'Tu n’es pas connectée',
+    english: 'You’re not logged in',
+  } as Trans,
+  favNotLoggedHasLocal: {
+    hebrew: 'המועדפים האלה שמורים במכשיר הזה בלבד. התחבר/י כדי לשמור אותם ולמצוא אותם בכל מכשיר.',
+    french: 'Ces favoris sont enregistrés sur cet appareil uniquement. Connecte-toi pour les sauvegarder et les retrouver sur tous tes appareils.',
+    english: 'These favorites are saved on this device only. Log in to save them and find them on all your devices.',
+  } as Trans,
+  favNotLoggedNoLocal: {
+    hebrew: 'יש לך מועדפים שמורים? התחבר/י כדי לראות אותם. כל מה שתוסיף/י לאחר ההתחברות יישמר בכל המכשירים.',
+    french: 'Tu as déjà des favoris enregistrés ? Connecte-toi pour les retrouver. Tout ce que tu ajoutes après connexion sera sauvegardé sur tous tes appareils.',
+    english: 'Already have saved favorites? Log in to see them. Anything you add after logging in is saved across your devices.',
+  } as Trans,
   dayNamesHe: ['', 'יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת'],
   dayNamesFr: ['', 'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Chabbat'],
   dayNamesEn: ['', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Shabbat'],

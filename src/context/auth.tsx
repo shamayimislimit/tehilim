@@ -17,6 +17,9 @@ interface AuthValue {
   /** Verify the code and open the session. Throws Error(<backend key>) on failure. */
   verifyCode: (email: string, code: string) => Promise<void>;
   logout: () => void;
+  /** Shared login-dialog visibility, so any component can prompt login. */
+  loginOpen: boolean;
+  setLoginOpen: (open: boolean) => void;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
@@ -42,6 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   useEffect(() => {
     const fromHash = consumeTokenFromHash();
@@ -82,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, ready, requestCode, verifyCode, logout }}>
+    <AuthContext.Provider value={{ token, user, ready, requestCode, verifyCode, logout, loginOpen, setLoginOpen }}>
       {children}
     </AuthContext.Provider>
   );
