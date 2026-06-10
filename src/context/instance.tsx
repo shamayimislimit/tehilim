@@ -73,6 +73,13 @@ const InstancePwa = ({ instance }: { instance: InstanceConfig }) => {
     const manifestLink = setLink('manifest', blobUrl);
     const appleIcon = setLink('apple-touch-icon', icon);
 
+    // Browser-tab favicon → the instance icon. There are several rel="icon"
+    // links (favicon.ico, 16, 32); point them all at the instance icon. Covers
+    // client-side navigation and deep-links that fall back to the default HTML.
+    const iconLinks = Array.from(document.head.querySelectorAll<HTMLLinkElement>('link[rel="icon"]'));
+    const prevIconHrefs = iconLinks.map((el) => el.getAttribute('href'));
+    iconLinks.forEach((el) => el.setAttribute('href', icon));
+
     const themeMeta = document.head.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const prevTheme = themeMeta?.getAttribute('content') ?? null;
     if (themeMeta && manifest.theme_color) themeMeta.setAttribute('content', manifest.theme_color);
@@ -86,6 +93,10 @@ const InstancePwa = ({ instance }: { instance: InstanceConfig }) => {
       else manifestLink.el.remove();
       if (appleIcon.created) appleIcon.el.remove();
       else if (appleIcon.prevHref) appleIcon.el.setAttribute('href', appleIcon.prevHref);
+      iconLinks.forEach((el, i) => {
+        const prev = prevIconHrefs[i];
+        if (prev) el.setAttribute('href', prev);
+      });
       if (themeMeta && prevTheme) themeMeta.setAttribute('content', prevTheme);
       document.title = prevTitle;
       URL.revokeObjectURL(blobUrl);

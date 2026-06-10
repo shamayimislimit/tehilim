@@ -55,10 +55,17 @@ function setName(html, name, value) {
 function setTitle(html, value) {
   return html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(value)}</title>`);
 }
+/** Point every favicon / apple-touch-icon <link> at the instance image. */
+function setIcons(html, image) {
+  return html
+    .replace(/(<link rel="icon"[^>]*href=")[^"]*(")/g, `$1${image}$2`)
+    .replace(/(<link rel="apple-touch-icon"[^>]*href=")[^"]*(")/g, `$1${image}$2`);
+}
 
 function render({ title, description, image, url, appTitle }) {
   let h = baseHtml;
   h = setTitle(h, title);
+  h = setIcons(h, image);
   h = setName(h, 'description', description);
   h = setName(h, 'apple-mobile-web-app-title', appTitle);
   h = setProp(h, 'og:type', 'website');
