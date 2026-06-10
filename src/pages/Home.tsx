@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
+import { InstallPrompt } from '@/components/InstallPrompt';
 import { useAppSettings } from '@/components/Layout';
 import { useInstanceLink } from '@/context/instance';
 import { getTodayInfo } from '@/lib/hebrewDate';
@@ -120,6 +121,9 @@ const Home = () => {
             )}
           </div>
         </section>
+
+        {/* Install — home page only, hidden once installed */}
+        <InstallPrompt language={language} />
 
         {/* Navigation cards */}
         <section className="space-y-3">

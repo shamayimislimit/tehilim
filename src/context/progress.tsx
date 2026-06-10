@@ -64,6 +64,8 @@ interface ProgressValue {
   removeChapter: (chapter: number) => void;
   renameFavorite: (id: string, name: string) => void;
   isFavorited: (chapter: number) => boolean;
+  /** Reorder favorites to match the given id order (drag & drop). */
+  reorderFavorites: (orderedIds: string[]) => void;
 }
 
 const ProgressContext = createContext<ProgressValue | null>(null);
@@ -160,6 +162,14 @@ export const ProgressProvider = ({ slug, children }: { slug: string; children: R
     renameFavorite: (id, name) =>
       setFavorites((prev) => prev.map((f) => (f.id === id ? { ...f, name: name.trim() } : f))),
     isFavorited: (chapter) => favorites.some((f) => f.chapter === chapter),
+    reorderFavorites: (orderedIds) =>
+      setFavorites((prev) => {
+        const byId = new Map(prev.map((f) => [f.id, f]));
+        const next = orderedIds.map((id) => byId.get(id)).filter(Boolean) as FavoritePerek[];
+        // Safety: keep any favorite not present in the provided order.
+        for (const f of prev) if (!orderedIds.includes(f.id)) next.push(f);
+        return next;
+      }),
   };
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;

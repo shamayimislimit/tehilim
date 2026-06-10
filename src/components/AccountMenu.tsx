@@ -96,8 +96,8 @@ export const AccountMenu = ({ language }: { language: Language }) => {
 
   return (
     <>
-      {/* sits just inline-start of the settings gear (which is at end-3) */}
-      <div className="fixed top-3 end-14 z-30">
+      {/* sits just right of the settings gear (which is at left-3) — both top-left */}
+      <div className="fixed top-3 left-14 z-30">
         <Button
           size="icon"
           variant="ghost"

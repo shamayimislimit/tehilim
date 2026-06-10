@@ -21,16 +21,18 @@ export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = fa
       className="sticky top-0 z-20 bg-background/85 backdrop-blur-sm border-b border-border/60"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
-      <div className="flex items-center gap-2 px-3 py-2.5">
+      {/* Back button is pinned physical-right (opposite the top-left controls),
+          every language; title stays centered via symmetric padding. */}
+      <div className="relative flex items-center px-3 py-2.5 min-h-[44px]">
         <Link
           to={backTo}
-          className="flex items-center gap-1 text-xs font-assistant text-muted-foreground hover:text-foreground transition-colors shrink-0 px-1.5 py-1 rounded-md"
+          className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-assistant text-muted-foreground hover:text-foreground transition-colors px-1.5 py-1 rounded-md"
         >
           <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
           <span>{t('back', language)}</span>
         </Link>
 
-        <div className="flex-1 min-w-0 text-center">
+        <div className="flex-1 min-w-0 text-center px-16">
           <p
             className={
               titleHebrew || language === 'hebrew'
@@ -47,9 +49,6 @@ export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = fa
             </p>
           ) : null}
         </div>
-
-        {/* spacer to keep the title visually centered */}
-        <div className="w-14 shrink-0" aria-hidden />
       </div>
     </div>
   );

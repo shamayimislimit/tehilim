@@ -50,6 +50,12 @@ export const translations = {
   favoritesDesc: { hebrew: 'הפרקים שבחרתם', french: 'Vos tehilim choisis', english: 'Your chosen tehilim' } as Trans,
   chooseDay: { hebrew: 'בחרו יום', french: 'Choisissez un jour', english: 'Choose a day' } as Trans,
   back: { hebrew: 'חזרה', french: 'Retour', english: 'Back' } as Trans,
+  reorder: { hebrew: 'שנה סדר', french: "Réordonner", english: 'Reorder' } as Trans,
+  browseAllTehilim: {
+    hebrew: 'עיון בכל הפרקים',
+    french: 'Parcourir tous les Tehilim',
+    english: 'Browse all Tehilim',
+  } as Trans,
   dayNamesHe: ['', 'יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת'],
   dayNamesFr: ['', 'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Chabbat'],
   dayNamesEn: ['', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Shabbat'],

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Share2, Download, Settings, Type, Languages, BookOpen } from 'lucide-react';
+import { Share2, Settings, Type, Languages, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
@@ -28,7 +27,6 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
   const instance = useInstance();
   const supportedLanguages = config.settings.supportedLanguages as Language[];
   const isRtl = language === 'hebrew';
-  const [installOpen, setInstallOpen] = useState(false);
 
   const handleShare = async () => {
     const title = `${instance.title.hebrew} - ${instance.dedication.hebrew}`;
@@ -40,20 +38,9 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
     }
   };
 
-  const handleInstall = () => {
-    const dp = (window as any).deferredPrompt;
-    if (dp) {
-      dp.prompt();
-      dp.userChoice.finally(() => ((window as any).deferredPrompt = null));
-    } else {
-      setInstallOpen(true);
-      toast.info(language === 'french' ? 'Sur iPhone : Partager → Ajouter à l’écran d’accueil' : 'iPhone: Share → Add to Home Screen');
-    }
-  };
-
   return (
-    // inline-end = always opposite the back button, so it never covers it
-    <div className="fixed top-3 end-3 z-30">
+    // Always pinned top-left (physical), opposite בס״ד which stays top-right.
+    <div className="fixed top-3 left-3 z-30">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -66,19 +53,13 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
         </PopoverTrigger>
         <PopoverContent
           className="w-80 p-5 space-y-5 rounded-2xl bg-background/95 backdrop-blur-md border-2 border-border/60 shadow-[var(--shadow-elegant)]"
-          align="end"
+          align="start"
           dir={isRtl ? 'rtl' : 'ltr'}
         >
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleShare} className="flex-1 gap-2 font-assistant">
-              <Share2 className="w-4 h-4" />
-              {t('share', language)}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleInstall} className="flex-1 gap-2 font-assistant">
-              <Download className="w-4 h-4" />
-              {t('install', language)}
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={handleShare} className="w-full gap-2 font-assistant">
+            <Share2 className="w-4 h-4" />
+            {t('share', language)}
+          </Button>
 
           {/* Font size */}
           <div className="space-y-3">

@@ -6,6 +6,6 @@ import { useProgress } from '@/context/progress';
  * consumers don't change.
  */
 export const useFavorites = () => {
-  const { favorites, addFavorite, removeFavorite, removeChapter, renameFavorite, isFavorited } = useProgress();
-  return { favorites, addFavorite, removeFavorite, removeChapter, renameFavorite, isFavorited };
+  const { favorites, addFavorite, removeFavorite, removeChapter, renameFavorite, isFavorited, reorderFavorites } = useProgress();
+  return { favorites, addFavorite, removeFavorite, removeChapter, renameFavorite, isFavorited, reorderFavorites };
 };

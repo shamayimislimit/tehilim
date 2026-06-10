@@ -16,8 +16,9 @@ export const Header = ({ language, subtitle }: HeaderProps) => {
 
   return (
     <header className="relative">
-      {/* logical start: stays top-right in Hebrew, moves left in FR/EN (settings now sits at end) */}
-      <div className="absolute top-5 start-5 z-10">
+      {/* בס״ד is always pinned top-right (physical), every language — the chrome
+          controls (account + settings) sit top-left, opposite it. */}
+      <div className="absolute top-5 right-5 z-10">
         <span className="text-xs font-frank text-muted-foreground/70 tracking-wide">בס&quot;ד</span>
       </div>
 
