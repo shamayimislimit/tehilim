@@ -18,7 +18,8 @@ export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = fa
 
   return (
     <div
-      className="sticky top-0 z-20 bg-background/85 backdrop-blur-sm border-b border-border/60"
+      className="sticky z-20 bg-background/85 backdrop-blur-sm border-b border-border/60"
+      style={{ top: 'var(--banner-h, 0px)' }}
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Back button is pinned physical-right (opposite the top-left controls),

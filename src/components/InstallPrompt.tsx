@@ -47,8 +47,16 @@ export const InstallPrompt = ({ language }: { language: Language }) => {
     };
   }, []);
 
-  if (installed || dismissed) return null;
-  if (!deferred && !isIOS()) return null; // not installable on this device/browser
+  const show = !installed && !dismissed && (!!deferred || isIOS());
+
+  // Reserve space for the fixed top bar: everything else reads --banner-h
+  // (root padding, the floating controls' top, the sticky PageHeader's top).
+  useEffect(() => {
+    document.documentElement.style.setProperty('--banner-h', show ? '44px' : '0px');
+    return () => document.documentElement.style.setProperty('--banner-h', '0px');
+  }, [show]);
+
+  if (!show) return null;
 
   const dismiss = () => {
     localStorage.setItem(DISMISS_KEY, '1');
@@ -78,29 +86,24 @@ export const InstallPrompt = ({ language }: { language: Language }) => {
 
   const isRtl = language === 'hebrew';
 
+  // Full-width bar pinned to the very top, above everything (z above the
+  // floating controls + sticky headers, which sit below it via --banner-h).
   return (
     <div
-      className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2.5"
+      className="fixed top-0 inset-x-0 z-50 h-11 flex items-center gap-2 px-3 bg-primary text-primary-foreground shadow-md"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
-      <button type="button" onClick={handleInstall} className="flex flex-1 min-w-0 items-center gap-3 text-start">
-        <span className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
-          <Download className="w-[18px] h-[18px] text-primary" />
-        </span>
-        <span className="flex-1 min-w-0">
-          <span className={`block ${isRtl ? 'font-david' : 'font-cormorant'} text-base leading-tight`}>
-            {tr(language, "Installer l’application", 'Install the app', 'התקנת האפליקציה')}
-          </span>
-          <span className="block text-xs font-assistant text-muted-foreground truncate">
-            {tr(language, "Accès rapide depuis l’écran d’accueil", 'Quick access from your home screen', 'גישה מהירה ממסך הבית')}
-          </span>
+      <button type="button" onClick={handleInstall} className="flex flex-1 min-w-0 items-center gap-2 text-start">
+        <Download className="w-4 h-4 shrink-0" />
+        <span className={`truncate ${isRtl ? 'font-david' : 'font-assistant'} text-sm font-medium`}>
+          {tr(language, "Installer l’application", 'Install the app', 'התקנת האפליקציה')}
         </span>
       </button>
       <button
         type="button"
         onClick={dismiss}
         aria-label={tr(language, 'Fermer', 'Dismiss', 'סגירה')}
-        className="shrink-0 p-1.5 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-background/60 transition-colors"
+        className="shrink-0 p-1.5 rounded-full text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/15 transition-colors"
       >
         <X className="w-4 h-4" />
       </button>

@@ -35,7 +35,8 @@ export const Layout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen relative">
+    // --banner-h (set by the install top bar) pushes all content below it.
+    <div className="min-h-screen relative" style={{ paddingTop: 'var(--banner-h, 0px)' }}>
       <div className="fixed inset-0 bg-[var(--gradient-wedding)] -z-10" />
       <div className="fixed inset-0 bg-[var(--gradient-overlay)] -z-10" />
 

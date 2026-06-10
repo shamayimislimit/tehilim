@@ -95,8 +95,8 @@ export const AccountMenu = ({ language }: { language: Language }) => {
 
   return (
     <>
-      {/* sits just right of the settings gear (which is at left-3) — both top-left */}
-      <div className="fixed top-3 left-14 z-30">
+      {/* sits just right of the settings gear (which is at left-3) — both top-left, below the install bar */}
+      <div className="fixed left-14 z-30" style={{ top: 'calc(var(--banner-h, 0px) + 0.75rem)' }}>
         <Button
           size="icon"
           variant="ghost"

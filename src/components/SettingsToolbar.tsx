@@ -39,8 +39,8 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
   };
 
   return (
-    // Always pinned top-left (physical), opposite בס״ד which stays top-right.
-    <div className="fixed top-3 left-3 z-30">
+    // Always pinned top-left (physical), opposite בס״ד; drops below the install bar.
+    <div className="fixed left-3 z-30" style={{ top: 'calc(var(--banner-h, 0px) + 0.75rem)' }}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
