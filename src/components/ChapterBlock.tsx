@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { Fragment, useState, useMemo } from 'react';
 import { PrayerFont, TehilimSettings } from '@/types/tehilim';
 import { getChapter } from '@/data/tehilimData';
 import { transformVerse } from '@/lib/textUtils';
@@ -7,12 +7,16 @@ import { t } from '@/data/translations';
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AddFavoriteDialog } from '@/components/AddFavoriteDialog';
+import { PSALM_119_CHAPTER, isLetterStart, letterForVerse } from '@/data/psalm119Letters';
 
 interface ChapterBlockProps {
   chapter: number;
   settings: TehilimSettings;
   /** When true, use a quieter title (used inside continuous reader). */
   compact?: boolean;
+  /** 1-based inclusive verse window. Used for partial chapters (e.g. 119:1-96). */
+  fromVerse?: number;
+  toVerse?: number;
 }
 
 const PRAYER_FONT_CLASS: Record<PrayerFont, string> = {
@@ -21,7 +25,7 @@ const PRAYER_FONT_CLASS: Record<PrayerFont, string> = {
   assistant: 'font-assistant',
 };
 
-export const ChapterBlock = ({ chapter, settings, compact = false }: ChapterBlockProps) => {
+export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse }: ChapterBlockProps) => {
   const chap = getChapter(chapter);
   const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers } = settings;
   const { isFavorited, addFavorite, removeChapter } = useFavorites();
@@ -37,6 +41,13 @@ export const ChapterBlock = ({ chapter, settings, compact = false }: ChapterBloc
   if (!chap) return null;
 
   const fav = isFavorited(chapter);
+  const isPsalm119 = chap.chapter === PSALM_119_CHAPTER;
+  // Clamp the requested verse window to what the chapter actually has.
+  const start = Math.max(1, fromVerse ?? 1);
+  const end = Math.min(chap.verseCount, toVerse ?? chap.verseCount);
+  const slice = verses.slice(start - 1, end);
+  const isPartial = start > 1 || end < chap.verseCount;
+  const versesWord = language === 'hebrew' ? 'פסוקים' : language === 'french' ? 'Versets' : 'Verses';
 
   return (
     <section
@@ -54,6 +65,14 @@ export const ChapterBlock = ({ chapter, settings, compact = false }: ChapterBloc
         <p className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground mt-0.5">
           {t('chapter', language)} <span dir="ltr">{chap.chapter}</span>
         </p>
+        {isPartial && (
+          <p className="text-[10px] tracking-[0.15em] font-assistant text-primary/70 mt-0.5">
+            {versesWord} <span dir="ltr">{start}–{end}</span>
+            {isPsalm119 && (
+              <span dir="rtl"> · {letterForVerse(start)?.letter}–{letterForVerse(end)?.letter}</span>
+            )}
+          </p>
+        )}
         {!compact && (
           <button
             type="button"
@@ -74,17 +93,36 @@ export const ChapterBlock = ({ chapter, settings, compact = false }: ChapterBloc
         className={cn('space-y-2.5', fontClass)}
         style={{ fontSize: `${fontSize}px`, lineHeight: 1.85 }}
       >
-        {verses.map((text, i) => {
-          const verseNum = i + 1;
+        {slice.map((text, i) => {
+          const verseNum = start + i;
+          // Psalm 119 acrostic: a letter heading opens each 8-verse stanza.
+          const letter = isPsalm119 && isLetterStart(verseNum) ? letterForVerse(verseNum) : undefined;
           return (
-            <p key={verseNum} className="text-right text-foreground">
-              {showVerseNumbers && (
-                <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none">
-                  {verseNum}.
-                </span>
+            <Fragment key={verseNum}>
+              {letter && (
+                <div
+                  className="flex items-center justify-center gap-3 pt-5 pb-1 first:pt-1 select-none"
+                  dir="rtl"
+                >
+                  <span className="h-px w-8 bg-primary/25" />
+                  <span className="font-david text-2xl leading-none text-primary">{letter.letter}</span>
+                  {language !== 'hebrew' && (
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground">
+                      {letter.latin}
+                    </span>
+                  )}
+                  <span className="h-px w-8 bg-primary/25" />
+                </div>
               )}
-              {text}
-            </p>
+              <p className="text-right text-foreground">
+                {showVerseNumbers && (
+                  <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none">
+                    {verseNum}.
+                  </span>
+                )}
+                {text}
+              </p>
+            </Fragment>
           );
         })}
       </div>

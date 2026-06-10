@@ -1,15 +1,16 @@
-import { TehilimSettings } from '@/types/tehilim';
+import { ReadingSegment, TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { t } from '@/data/translations';
 
 interface DayContinuousReaderProps {
-  chapters: number[];
+  segments: ReadingSegment[];
   settings: TehilimSettings;
 }
 
-export const DayContinuousReader = ({ chapters, settings }: DayContinuousReaderProps) => {
+export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderProps) => {
   const language = settings.language;
-  const n = chapters.length;
+  // Distinct chapters covered today (a partial-chapter day like 119:1-96 = 1).
+  const n = new Set(segments.map((s) => s.chapter)).size;
   const countLabel =
     language === 'hebrew'
       ? n === 1 ? 'פרק אחד' : `${n} פרקים`
@@ -25,8 +26,15 @@ export const DayContinuousReader = ({ chapters, settings }: DayContinuousReaderP
       </div>
 
       <div className="rounded-2xl border border-border bg-card/40 p-4 md:p-5 space-y-2">
-        {chapters.map((c) => (
-          <ChapterBlock key={c} chapter={c} settings={settings} compact />
+        {segments.map((s, i) => (
+          <ChapterBlock
+            key={`${s.chapter}:${s.fromVerse ?? ''}-${s.toVerse ?? ''}-${i}`}
+            chapter={s.chapter}
+            fromVerse={s.fromVerse}
+            toVerse={s.toVerse}
+            settings={settings}
+            compact
+          />
         ))}
       </div>
 

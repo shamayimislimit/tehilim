@@ -18,12 +18,20 @@ export interface Chapter {
   verses: string[];
 }
 
+/** A reading unit: a whole chapter, or a verse slice of one (e.g. 119:1-96). */
+export interface ReadingSegment {
+  chapter: number;
+  fromVerse?: number;       // 1-based inclusive; undefined = from the start
+  toVerse?: number;         // 1-based inclusive; undefined = to the end
+}
+
 export interface ScheduleDay {
   index: number;            // 1..7 or 1..30
   label: string;            // יום ראשון  /  א׳
   labelLatin?: string;      // Sunday (weekly only)
-  chapters: number[];       // expanded list
-  range: string;            // "1-29"
+  chapters: number[];       // distinct chapter numbers (pickers / counts)
+  segments: ReadingSegment[]; // ordered reading units, supports partial chapters
+  range: string;            // "1-29" / "119:1-96"
 }
 
 export interface FavoritePerek {

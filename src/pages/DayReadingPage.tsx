@@ -80,7 +80,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
           </Link>
         </div>
 
-        <DayContinuousReader chapters={sched.chapters} settings={settings} />
+        <DayContinuousReader segments={sched.segments} settings={settings} />
       </main>
     </div>
   );
