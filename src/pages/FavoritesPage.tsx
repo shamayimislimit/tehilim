@@ -22,7 +22,7 @@ const FavoritesPage = () => {
       />
 
       <main className="p-4">
-        <FavoritesView settings={settings} onOpenChapter={(n) => navigate(iLink(`/perek/${n}`))} />
+        <FavoritesView settings={settings} onOpenChapter={(n) => navigate(iLink(`/favorites/${n}`))} />
       </main>
     </div>
   );
