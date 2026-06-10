@@ -15,14 +15,33 @@ export interface ServerProgress {
 
 const authHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
 
-/** Send a magic-link email. `redirect` is the full URL to return to after login. */
-export async function requestMagicLink(email: string, redirect: string): Promise<void> {
+/** Email a 6-digit login code to the user. */
+export async function requestCode(email: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/tehilim/auth/request`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, redirect }),
+    body: JSON.stringify({ email }),
   });
   if (!res.ok) throw new Error(`auth/request failed: ${res.status}`);
+}
+
+/**
+ * Verify a 6-digit code and open a session. Throws `Error(<code>)` where the
+ * message is the backend's stable error key (`wrong_code` | `expired` |
+ * `too_many` | `invalid_request`) so the caller can localise it.
+ */
+export async function verifyCode(
+  email: string,
+  code: string
+): Promise<{ token: string; user: { id: string; email: string } }> {
+  const res = await fetch(`${API_BASE}/api/tehilim/auth/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, code }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || 'wrong_code');
+  return { token: data.token, user: data.user };
 }
 
 export async function fetchMe(token: string): Promise<{ id: string; email: string } | null> {

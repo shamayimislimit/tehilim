@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
-import { fetchMe, requestMagicLink } from '@/lib/api';
+import { fetchMe, requestCode as apiRequestCode, verifyCode as apiVerifyCode } from '@/lib/api';
 
 const TOKEN_KEY = 'tehilim-auth-token';
 
@@ -12,7 +12,10 @@ interface AuthValue {
   token: string | null;
   user: User | null;
   ready: boolean; // initial token/user resolution finished
-  requestLogin: (email: string) => Promise<void>;
+  /** Email a 6-digit login code. */
+  requestCode: (email: string) => Promise<void>;
+  /** Verify the code and open the session. Throws Error(<backend key>) on failure. */
+  verifyCode: (email: string, code: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -61,10 +64,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .finally(() => setReady(true));
   }, []);
 
-  const requestLogin = useCallback(async (email: string) => {
-    // Return the user to the page they're on (sans hash résiduel).
-    const redirect = window.location.origin + window.location.pathname + window.location.search;
-    await requestMagicLink(email, redirect);
+  const requestCode = useCallback(async (email: string) => {
+    await apiRequestCode(email);
+  }, []);
+
+  const verifyCode = useCallback(async (email: string, code: string) => {
+    const { token: jwt, user: u } = await apiVerifyCode(email, code);
+    localStorage.setItem(TOKEN_KEY, jwt);
+    setToken(jwt);
+    setUser(u);
   }, []);
 
   const logout = useCallback(() => {
@@ -74,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, ready, requestLogin, logout }}>
+    <AuthContext.Provider value={{ token, user, ready, requestCode, verifyCode, logout }}>
       {children}
     </AuthContext.Provider>
   );

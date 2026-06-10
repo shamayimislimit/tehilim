@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useOutletContext } from 'react-router-dom';
 import { SettingsToolbar } from '@/components/SettingsToolbar';
+import { AccountMenu } from '@/components/AccountMenu';
 import { useTehilimSettings } from '@/hooks/useTehilimSettings';
 import { TehilimSettings } from '@/types/tehilim';
 
@@ -38,6 +39,7 @@ export const Layout = () => {
       <div className="fixed inset-0 bg-[var(--gradient-wedding)] -z-10" />
       <div className="fixed inset-0 bg-[var(--gradient-overlay)] -z-10" />
 
+      <AccountMenu language={settings.language} />
       <SettingsToolbar settings={settings} onUpdate={updateSettings} />
 
       <div className="max-w-3xl mx-auto pb-24">
