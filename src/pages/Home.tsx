@@ -69,6 +69,9 @@ const Home = () => {
       <Header language={language} />
 
       <main className="p-4 space-y-6">
+        {/* Install banner — top of the page, hidden once installed/dismissed */}
+        <InstallPrompt language={language} />
+
         {/* Today — direct reading access */}
         <section className="rounded-2xl border border-primary/30 bg-card/70 shadow-[var(--shadow-soft)] overflow-hidden">
           <div className="p-4 md:p-5 pb-3">
@@ -121,9 +124,6 @@ const Home = () => {
             )}
           </div>
         </section>
-
-        {/* Install — home page only, hidden once installed */}
-        <InstallPrompt language={language} />
 
         {/* Navigation cards */}
         <section className="space-y-3">
