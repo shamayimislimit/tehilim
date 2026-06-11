@@ -46,9 +46,24 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
           className={cn('px-4 pb-4 pt-1 space-y-3', fontClass)}
           style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
         >
-          {paragraphs.map((p, i) => (
-            <p key={i} className="text-right text-foreground">{p}</p>
-          ))}
+          {paragraphs.map((p, i) => {
+            // Spans wrapped in [[ … ]] are rubrics/instructions (book choices,
+            // (פלונית) placeholders…) — rendered smaller & muted, like the PDF.
+            const parts = p.split(/\[\[(.+?)\]\]/g);
+            return (
+              <p key={i} className="text-right text-foreground">
+                {parts.map((part, j) =>
+                  j % 2 === 1 ? (
+                    <span key={j} className="font-assistant text-[0.7em] text-muted-foreground/70 align-middle">
+                      {part}
+                    </span>
+                  ) : (
+                    <span key={j}>{part}</span>
+                  )
+                )}
+              </p>
+            );
+          })}
         </div>
       )}
     </div>
