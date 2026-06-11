@@ -121,13 +121,19 @@ export const ProgressProvider = ({ slug, children }: { slug: string; children: R
     getProgress(token, slug)
       .then((remote) => {
         if (cancelled) return;
-        if (remote && (remote.settings || remote.favorites)) {
-          if (remote.settings) setSettings((prev) => ({ ...prev, ...remote.settings }));
-          if (remote.favorites) setFavorites(normalizeFavorites(remote.favorites));
-        } else {
-          // Server empty → seed it from current local state (first-login merge).
-          putProgress(token, slug, { settings, favorites }).catch(() => {});
-        }
+        if (remote?.settings) setSettings((prev) => ({ ...prev, ...remote.settings }));
+        // MERGE (union by id), never replace: an empty server array (`[]` is
+        // truthy in JS) must NOT wipe local favorites. Server order wins for
+        // items it has; local-only favorites are appended. The debounced save
+        // below then pushes the merged set back so the server gains the extras.
+        const serverFavs = remote?.favorites ? normalizeFavorites(remote.favorites) : [];
+        setFavorites((local) => {
+          const seen = new Set<string>();
+          const merged: FavoritePerek[] = [];
+          for (const f of serverFavs) if (!seen.has(f.id)) { seen.add(f.id); merged.push(f); }
+          for (const f of local) if (!seen.has(f.id)) { seen.add(f.id); merged.push(f); }
+          return merged;
+        });
       })
       .catch(() => {/* offline: keep local */})
       .finally(() => {
