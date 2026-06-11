@@ -65,8 +65,14 @@ const closingBody = `כְּאִלּוּ כִּוַּנּוּ בְּכָל הַכ
 const closingIntroVerse =
   'מִי יִתֵּן מִצִּיּוֹן יְשׁוּעַת יִשְׂרָאֵל, בְּשׁוּב יְיָ שְׁבוּת עַמּוֹ, יָגֵל יַעֲקֹב יִשְׂמַח יִשְׂרָאֵל.';
 
-const bookSelectorLine =
-  'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר [[(רִאשׁוֹן / שֵׁנִי / שְׁלִישִׁי / רְבִיעִי / חֲמִישִׁי)]] שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר [[(בְּרֵאשִׁית / שְׁמוֹת / וַיִּקְרָא / בַּמִּדְבָּר / דְּבָרִים)]].';
+/** The 5 books of Tehilim paired with their parallel Chumash (ראשון↔בראשית …). */
+export const TORAH_BOOK_MAP: { ordinal: string; chumash: string }[] = [
+  { ordinal: 'רִאשׁוֹן', chumash: 'בְּרֵאשִׁית' },
+  { ordinal: 'שֵׁנִי', chumash: 'שְׁמוֹת' },
+  { ordinal: 'שְׁלִישִׁי', chumash: 'וַיִּקְרָא' },
+  { ordinal: 'רְבִיעִי', chumash: 'בַּמִּדְבָּר' },
+  { ordinal: 'חֲמִישִׁי', chumash: 'דְּבָרִים' },
+];
 
 export const prayerAfterBook: Prayer = {
   title: {
@@ -74,7 +80,13 @@ export const prayerAfterBook: Prayer = {
     french: 'Après un livre complet',
     english: 'After a complete book',
   },
-  text: [closingIntroVerse, bookSelectorLine, closingBody].join('\n\n'),
+  // @@BOOKMAP@@ is rendered by PrayerBlock as the aligned 5-row pairing table.
+  text: [
+    closingIntroVerse,
+    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת הַסֵּפֶר שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר מֵחֻמְּשֵׁי הַתּוֹרָה:',
+    '@@BOOKMAP@@',
+    closingBody,
+  ].join('\n\n'),
 };
 
 export const prayerAfterFiveBooks: Prayer = {
