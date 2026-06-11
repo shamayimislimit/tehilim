@@ -1,5 +1,7 @@
 import { ReadingSegment, TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
+import { PrayerBlock } from '@/components/PrayerBlock';
+import { prayerBefore, prayerAfter } from '@/data/prayers';
 import { t } from '@/data/translations';
 
 interface DayContinuousReaderProps {
@@ -20,6 +22,9 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
 
   return (
     <div className="space-y-4">
+      {/* Yehi Ratzon said before the reading */}
+      <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} settings={settings} />
+
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
         <span>{t('chaptersOfTheDay', language)}</span>
         <span>{countLabel}</span>
@@ -38,9 +43,12 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
         ))}
       </div>
 
-      <p className="text-center text-xs font-assistant text-muted-foreground py-4">
+      <p className="text-center text-xs font-assistant text-muted-foreground py-2">
         {language === 'hebrew' ? 'סיום פרקי היום' : language === 'french' ? 'Fin des chapitres du jour' : "End of today's chapters"}
       </p>
+
+      {/* Yehi Ratzon said after the reading */}
+      <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} settings={settings} />
     </div>
   );
 };
