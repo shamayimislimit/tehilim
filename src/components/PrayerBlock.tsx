@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { PrayerFont, TehilimSettings } from '@/types/tehilim';
 import { transformVerse } from '@/lib/textUtils';
@@ -48,20 +48,20 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
           style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
         >
           {paragraphs.map((p, i) => {
-            // Aligned 5-row pairing table (Tehilim book ↔ parallel Chumash).
+            // 5 aligned full lines (one per book) — each keeps the connecting
+            // phrase between the Tehilim book and its parallel Chumash.
             if (p === '@@BOOKMAP@@') {
+              const tv = (s: string) => transformVerse(s, showCantillation, showNikkud);
               return (
-                <div
-                  key={i}
-                  dir="rtl"
-                  className="my-1 rounded-xl border border-border/40 bg-background/40 px-5 py-2.5 grid grid-cols-[auto_auto_auto] gap-x-4 gap-y-1.5 items-center w-fit mx-auto"
-                >
+                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-4 py-3 space-y-2">
                   {TORAH_BOOK_MAP.map((b, k) => (
-                    <Fragment key={k}>
-                      <span className="text-foreground">סֵפֶר {transformVerse(b.ordinal, showCantillation, showNikkud)}</span>
-                      <span className="text-muted-foreground/50">—</span>
-                      <span className="text-primary">{transformVerse(b.chumash, showCantillation, showNikkud)}</span>
-                    </Fragment>
+                    <p key={k} className="text-right text-foreground leading-relaxed">
+                      {tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר ')}
+                      <span className="text-primary font-semibold">{tv(b.ordinal)}</span>
+                      {tv(' שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר ')}
+                      <span className="text-primary font-semibold">{tv(b.chumash)}</span>
+                      {tv('.')}
+                    </p>
                   ))}
                 </div>
               );

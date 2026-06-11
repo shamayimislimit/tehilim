@@ -80,10 +80,11 @@ export const prayerAfterBook: Prayer = {
     french: 'Après un livre complet',
     english: 'After a complete book',
   },
-  // @@BOOKMAP@@ is rendered by PrayerBlock as the aligned 5-row pairing table.
+  // @@BOOKMAP@@ is rendered by PrayerBlock as 5 aligned full lines, one per
+  // book (each keeps the connecting phrase between the book and its Chumash).
   text: [
     closingIntroVerse,
-    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת הַסֵּפֶר שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר מֵחֻמְּשֵׁי הַתּוֹרָה:',
+    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ:',
     '@@BOOKMAP@@',
     closingBody,
   ].join('\n\n'),
