@@ -1,7 +1,7 @@
 import { ReadingSegment, TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { PrayerBlock } from '@/components/PrayerBlock';
-import { prayerBefore, prayerAfter } from '@/data/prayers';
+import { prayerBefore } from '@/data/prayers';
 import { t } from '@/data/translations';
 
 interface DayContinuousReaderProps {
@@ -46,9 +46,8 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
       <p className="text-center text-xs font-assistant text-muted-foreground py-2">
         {language === 'hebrew' ? 'סיום פרקי היום' : language === 'french' ? 'Fin des chapitres du jour' : "End of today's chapters"}
       </p>
-
-      {/* Yehi Ratzon said after the reading */}
-      <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} settings={settings} />
+      {/* The closing Yehi Ratzon renders inline after a book-ending psalm
+          (41/72/89/106/150) via ChapterBlock — see prayers.ts. */}
     </div>
   );
 };

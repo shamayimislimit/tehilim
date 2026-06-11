@@ -1,5 +1,7 @@
 import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
+import { PrayerBlock } from '@/components/PrayerBlock';
+import { prayerBefore } from '@/data/prayers';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getChapter } from '@/data/tehilimData';
@@ -60,6 +62,9 @@ export const ChapterReader = ({
           <ChevronRight className="w-4 h-4 rtl:rotate-180" />
         </Button>
       </div>
+
+      {/* Opening Yehi Ratzon — shown in every reading section */}
+      <PrayerBlock title={prayerBefore.title[settings.language]} text={prayerBefore.text} settings={settings} />
 
       <ChapterBlock chapter={chapter} settings={settings} />
     </article>
