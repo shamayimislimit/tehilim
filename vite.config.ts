@@ -53,7 +53,15 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webmanifest}'],
         navigateFallback: '/tehilim/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        // Don't serve the default index.html for instance ROOT urls
+        // (/tehilim/<slug>/) — let them hit the network so the per-slug
+        // index.html + manifest (right start_url/icon) is served, so iOS
+        // "Add to Home Screen" launches the correct instance. Reserved routes
+        // (week/month/perek/favorites) and deep links still use the fallback.
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/tehilim\/(?!(?:week|month|perek|favorites)(?:\/|$))[^/]+\/?$/,
+        ],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
