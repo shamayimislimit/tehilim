@@ -23,8 +23,22 @@ export const prayerBefore: Prayer = {
 // book just finished (1st..5th) and its parallel Chumash; after the whole book
 // (Psalm 150) the "five books" variant is used. Source: Sarah's PDF.
 
-const closingIntro =
-  'מִי יִתֵּן מִצִּיּוֹן יְשׁוּעַת יִשְׂרָאֵל, בְּשׁוּב יְיָ שְׁבוּת עַמּוֹ, יָגֵל יַעֲקֹב יִשְׂמַח יִשְׂרָאֵל.';
+/**
+ * Concluding verses (מי יתן מציון…) said at the END of EVERY reading section.
+ * Tehillim 14:7, 37:39, 37:40.
+ */
+export const sectionEndVerses: Prayer = {
+  title: {
+    hebrew: 'פְּסוּקֵי סִיּוּם',
+    french: 'Versets de conclusion',
+    english: 'Concluding verses',
+  },
+  text: `מִי יִתֵּן מִצִּיּוֹן יְשׁוּעַת יִשְׂרָאֵל, בְּשׁוּב יְיָ שְׁבוּת עַמּוֹ, יָגֵל יַעֲקֹב יִשְׂמַח יִשְׂרָאֵל.
+
+וּתְשׁוּעַת צַדִּיקִים מֵיְיָ, מָעוּזָּם בְּעֵת צָרָה.
+
+וַיַּעְזְרֵם יְיָ וַיְפַלְּטֵם, יְפַלְּטֵם מֵרְשָׁעִים וְיוֹשִׁיעֵם, כִּי חָסוּ בוֹ.`,
+};
 
 const bookLine = (ordinal: string, chumash: string) =>
   `יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר ${ordinal} שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר ${chumash}.`;
@@ -70,6 +84,7 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
   const b = BOOK_END[chapter];
   if (!b) return null;
   const middle = chapter === 150 ? fiveBooksLine : bookLine(b.ordinal, b.chumash);
+  // No מי יתן intro here — the section-end verses already carry it.
   const title =
     chapter === 150
       ? {
@@ -82,5 +97,5 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
           french: `Prière après ${b.fr}`,
           english: `Prayer after ${b.en}`,
         };
-  return { title, text: [closingIntro, middle, closingBody].join('\n\n') };
+  return { title, text: [middle, closingBody].join('\n\n') };
 };

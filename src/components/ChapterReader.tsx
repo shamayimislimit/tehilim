@@ -1,6 +1,7 @@
 import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { PrayerBlock } from '@/components/PrayerBlock';
+import { SectionClosing } from '@/components/SectionClosing';
 import { prayerBefore } from '@/data/prayers';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -67,6 +68,9 @@ export const ChapterReader = ({
       <PrayerBlock title={prayerBefore.title[settings.language]} text={prayerBefore.text} settings={settings} />
 
       <ChapterBlock chapter={chapter} settings={settings} />
+
+      {/* Concluding verses + book-completion Yehi Ratzon (if this psalm ends a book) */}
+      <SectionClosing chapters={[chapter]} settings={settings} />
     </article>
   );
 };

@@ -7,9 +7,7 @@ import { t } from '@/data/translations';
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AddFavoriteDialog } from '@/components/AddFavoriteDialog';
-import { PrayerBlock } from '@/components/PrayerBlock';
 import { PSALM_119_CHAPTER, isLetterStart, letterForVerse } from '@/data/psalm119Letters';
-import { isBookEnd, closingPrayerFor } from '@/data/prayers';
 
 interface ChapterBlockProps {
   chapter: number;
@@ -50,9 +48,6 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
   const slice = verses.slice(start - 1, end);
   const isPartial = start > 1 || end < chap.verseCount;
   const versesWord = language === 'hebrew' ? 'פסוקים' : language === 'french' ? 'Versets' : 'Verses';
-  // Closing Yehi Ratzon after a book-ending psalm (41/72/89/106/150) — only
-  // when the whole chapter is shown (book-enders are never split).
-  const closing = end === chap.verseCount && isBookEnd(chap.chapter) ? closingPrayerFor(chap.chapter) : null;
 
   return (
     <section
@@ -131,12 +126,6 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
           );
         })}
       </div>
-
-      {closing && (
-        <div className="mt-5">
-          <PrayerBlock title={closing.title[language]} text={closing.text} settings={settings} />
-        </div>
-      )}
 
       {!compact && (
         <AddFavoriteDialog
