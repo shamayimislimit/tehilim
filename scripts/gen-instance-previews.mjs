@@ -61,11 +61,16 @@ function setIcons(html, image) {
     .replace(/(<link rel="icon"[^>]*href=")[^"]*(")/g, `$1${image}$2`)
     .replace(/(<link rel="apple-touch-icon"[^>]*href=")[^"]*(")/g, `$1${image}$2`);
 }
+/** Point every <link rel="manifest"> at the per-instance manifest. */
+function setManifest(html, href) {
+  return html.replace(/(<link rel="manifest"[^>]*href=")[^"]*(")/g, `$1${href}$2`);
+}
 
-function render({ title, description, image, url, appTitle }) {
+function render({ title, description, image, url, appTitle, manifestHref }) {
   let h = baseHtml;
   h = setTitle(h, title);
   h = setIcons(h, image);
+  if (manifestHref) h = setManifest(h, manifestHref);
   h = setName(h, 'description', description);
   h = setName(h, 'apple-mobile-web-app-title', appTitle);
   h = setProp(h, 'og:type', 'website');
@@ -103,6 +108,29 @@ for (const it of instances) {
   const url = `${ORIGIN}/tehilim/${it.slug}/`;
   const dir = join(htmlDir, it.slug);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, 'index.html'), render({ title, description, image, url, appTitle: it.short_name || 'Tehilim' }));
-  console.log(`${it.slug} -> ${join(dir, 'index.html')}  og:image=${image}`);
+
+  // Per-instance manifest so "Add to Home Screen" launches THIS instance
+  // (start_url/scope with the slug) — not the default app. iOS reads this at
+  // install time; without it the home-screen icon opens /tehilim/.
+  const scope = `/tehilim/${it.slug}/`;
+  const iconSrc = it.icon_url || '/tehilim/app-icon.png';
+  const manifestHref = `${scope}manifest.webmanifest`;
+  const manifest = {
+    id: scope,
+    name: title,
+    short_name: it.short_name || 'Tehilim',
+    start_url: scope,
+    scope,
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: it.theme_color || '#3b5bdb',
+    icons: [
+      { src: iconSrc, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: iconSrc, sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: iconSrc, sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+  };
+  writeFileSync(join(dir, 'manifest.webmanifest'), JSON.stringify(manifest, null, 2));
+  writeFileSync(join(dir, 'index.html'), render({ title, description, image, url, appTitle: it.short_name || 'Tehilim', manifestHref }));
+  console.log(`${it.slug} -> index.html + manifest.webmanifest (start_url=${scope}, icon=${iconSrc})`);
 }
