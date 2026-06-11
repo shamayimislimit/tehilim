@@ -69,8 +69,8 @@ export const ChapterReader = ({
 
       <ChapterBlock chapter={chapter} settings={settings} />
 
-      {/* Concluding verses + book-completion Yehi Ratzon (if this psalm ends a book) */}
-      <SectionClosing chapters={[chapter]} settings={settings} />
+      {/* Concluding verses (book Yehi Ratzon renders inline in ChapterBlock) */}
+      <SectionClosing settings={settings} />
     </article>
   );
 };

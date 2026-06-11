@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useAppSettings } from '@/components/Layout';
 import { useInstanceLink } from '@/context/instance';
 import { PageHeader } from '@/components/PageHeader';
@@ -18,8 +18,16 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
   const { language } = settings;
   const isRtl = language === 'hebrew';
   const iLink = useInstanceLink();
+  const navigate = useNavigate();
   const { day: dayParam } = useParams();
   const day = Number(dayParam);
+
+  // Back = where the user actually came from (Home's "today" link, or the day
+  // picker). Fall back to the picker on a cold deep-link entry (no history).
+  const handleBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate(iLink(`/${cycle}`));
+  };
 
   const days = useMemo(() => (cycle === 'week' ? getWeeklySchedule() : getMonthlySchedule()), [cycle]);
   const max = cycle === 'week' ? 7 : 30;
@@ -46,6 +54,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
         title={title}
         subtitle={isToday ? today.hebrewDateFull : sched.range}
         backTo={iLink(`/${cycle}`)}
+        onBack={handleBack}
       />
 
       <main className="p-4 space-y-4">

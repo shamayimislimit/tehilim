@@ -48,8 +48,8 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
         {language === 'hebrew' ? 'סיום פרקי היום' : language === 'french' ? 'Fin des chapitres du jour' : "End of today's chapters"}
       </p>
 
-      {/* Concluding verses + any book-completion Yehi Ratzon */}
-      <SectionClosing chapters={[...new Set(segments.map((s) => s.chapter))]} settings={settings} />
+      {/* Concluding verses (the book Yehi Ratzon renders inline after its psalm) */}
+      <SectionClosing settings={settings} />
     </div>
   );
 };

@@ -8,13 +8,18 @@ interface PageHeaderProps {
   title: string;
   subtitle?: string;
   backTo: string;
+  /** When set, the back control runs this instead of navigating to `backTo`
+      (e.g. go back in history to wherever the user came from). */
+  onBack?: () => void;
   /** Force the Hebrew prayer font for the title even in FR/EN (e.g. "פרק קכ״א"). */
   titleHebrew?: boolean;
 }
 
 /** Compact sticky header used on inner pages (picker / reading / favorites). */
-export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = false }: PageHeaderProps) => {
+export const PageHeader = ({ language, title, subtitle, backTo, onBack, titleHebrew = false }: PageHeaderProps) => {
   const isRtl = language === 'hebrew';
+  const backClass =
+    'absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-assistant text-muted-foreground hover:text-foreground transition-colors px-1.5 py-1 rounded-md';
 
   return (
     <div
@@ -25,13 +30,17 @@ export const PageHeader = ({ language, title, subtitle, backTo, titleHebrew = fa
       {/* Back button is pinned physical-right (opposite the top-left controls),
           every language; title stays centered via symmetric padding. */}
       <div className="relative flex items-center px-3 py-2.5 min-h-[44px]">
-        <Link
-          to={backTo}
-          className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-assistant text-muted-foreground hover:text-foreground transition-colors px-1.5 py-1 rounded-md"
-        >
-          <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
-          <span>{t('back', language)}</span>
-        </Link>
+        {onBack ? (
+          <button type="button" onClick={onBack} className={backClass}>
+            <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
+            <span>{t('back', language)}</span>
+          </button>
+        ) : (
+          <Link to={backTo} className={backClass}>
+            <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
+            <span>{t('back', language)}</span>
+          </Link>
+        )}
 
         <div className="flex-1 min-w-0 text-center px-16">
           <p
