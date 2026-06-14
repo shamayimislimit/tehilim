@@ -65,17 +65,20 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
             if (p === '@@BOOKMAP@@') {
               const tv = (s: string) => transformVerse(s, showCantillation, showNikkud);
               return (
-                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-4 py-3 space-y-2 text-center">
-                  <p className="text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת')}</p>
-                  <div className="grid grid-cols-5 divide-x divide-border/30">
+                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3">
+                  {/* One grid, 5 auto-width columns: each column fits its widest
+                      word so nothing is squeezed; ordinal stays above its Chumash. */}
+                  <div
+                    className="grid gap-x-4 gap-y-1.5 justify-center text-center"
+                    style={{ gridTemplateColumns: 'repeat(5, auto)' }}
+                  >
+                    <p className="col-span-5 text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={k} className="px-1 text-primary font-semibold">{tv(b.ordinal)}</span>
+                      <span key={`o${k}`} className="whitespace-nowrap text-primary font-semibold">{tv(b.ordinal)}</span>
                     ))}
-                  </div>
-                  <p className="text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ')}</p>
-                  <div className="grid grid-cols-5 divide-x divide-border/30">
+                    <p className="col-span-5 text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={k} className="px-1 text-primary font-semibold">{tv(b.chumash)}</span>
+                      <span key={`c${k}`} className="whitespace-nowrap text-primary font-semibold">{tv(b.chumash)}</span>
                     ))}
                   </div>
                 </div>
