@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { PrayerFont, TehilimSettings } from '@/types/tehilim';
 import { transformVerse } from '@/lib/textUtils';
-import { TORAH_BOOK_MAP } from '@/data/prayers';
+import { TORAH_BOOK_MAP, RUBRIC_5BOOKS } from '@/data/prayers';
 import { cn } from '@/lib/utils';
 
 const FONT_CLASS: Record<PrayerFont, string> = {
@@ -21,7 +21,7 @@ interface PrayerBlockProps {
 /** Collapsible prayer (Yehi Ratzon before / after Tehilim), styled like the app. */
 export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: PrayerBlockProps) => {
   const [open, setOpen] = useState(defaultOpen);
-  const { prayerFont, fontSize, showCantillation, showNikkud } = settings;
+  const { language, prayerFont, fontSize, showCantillation, showNikkud } = settings;
   const fontClass = FONT_CLASS[prayerFont] ?? FONT_CLASS.frank;
   const paragraphs = text
     .split(/\n\s*\n/)
@@ -48,21 +48,36 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
           style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
         >
           {paragraphs.map((p, i) => {
-            // 5 aligned full lines (one per book) — each keeps the connecting
-            // phrase between the Tehilim book and its parallel Chumash.
+            // Translated rubric line (comment style) before the five-books line.
+            if (p === '@@RUBRIC_5BOOKS@@') {
+              return (
+                <p
+                  key={i}
+                  dir={language === 'hebrew' ? 'rtl' : 'ltr'}
+                  className="font-assistant text-[0.78em] text-muted-foreground/70 text-center"
+                >
+                  {RUBRIC_5BOOKS[language]}
+                </p>
+              );
+            }
+            // Lead line → 5 ordinals → connecting line → 5 Chumashim, with the
+            // two rows column-aligned (ראשון above בראשית …).
             if (p === '@@BOOKMAP@@') {
               const tv = (s: string) => transformVerse(s, showCantillation, showNikkud);
               return (
-                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-4 py-3 space-y-2">
-                  {TORAH_BOOK_MAP.map((b, k) => (
-                    <p key={k} className="text-right text-foreground leading-relaxed">
-                      {tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר ')}
-                      <span className="text-primary font-semibold">{tv(b.ordinal)}</span>
-                      {tv(' שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר ')}
-                      <span className="text-primary font-semibold">{tv(b.chumash)}</span>
-                      {tv('.')}
-                    </p>
-                  ))}
+                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-4 py-3 space-y-2 text-center">
+                  <p className="text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת')}</p>
+                  <div className="grid grid-cols-5 divide-x divide-border/30">
+                    {TORAH_BOOK_MAP.map((b, k) => (
+                      <span key={k} className="px-1 text-primary font-semibold">{tv(b.ordinal)}</span>
+                    ))}
+                  </div>
+                  <p className="text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ')}</p>
+                  <div className="grid grid-cols-5 divide-x divide-border/30">
+                    {TORAH_BOOK_MAP.map((b, k) => (
+                      <span key={k} className="px-1 text-primary font-semibold">{tv(b.chumash)}</span>
+                    ))}
+                  </div>
                 </div>
               );
             }

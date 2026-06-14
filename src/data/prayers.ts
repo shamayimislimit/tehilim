@@ -74,29 +74,31 @@ export const TORAH_BOOK_MAP: { ordinal: string; chumash: string }[] = [
   { ordinal: 'חֲמִישִׁי', chumash: 'דְּבָרִים' },
 ];
 
-export const prayerAfterBook: Prayer = {
+export const prayerAfter: Prayer = {
   title: {
-    hebrew: 'אַחַר אֲמִירַת סֵפֶר שָׁלֵם',
-    french: 'Après un livre complet',
-    english: 'After a complete book',
+    hebrew: 'תְּפִלָּה לְאַחַר אֲמִירַת תְּהִלִּים',
+    french: 'Prière après les psaumes',
+    english: 'Prayer after the psalms',
   },
-  // @@BOOKMAP@@ is rendered by PrayerBlock as 5 aligned full lines, one per
-  // book (each keeps the connecting phrase between the book and its Chumash).
+  // @@BOOKMAP@@ is rendered by PrayerBlock as: lead line → 5 ordinals row →
+  // connecting line → 5 Chumashim row (columns aligned: ראשון above בראשית …).
+  // Then the "after the five books" rubric (comment) + its line — one prayer
+  // covering both cases (no separate button).
   text: [
     closingIntroVerse,
-    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ:',
+    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     '@@BOOKMAP@@',
+    '@@RUBRIC_5BOOKS@@',
+    fiveBooksLine,
     closingBody,
   ].join('\n\n'),
 };
 
-export const prayerAfterFiveBooks: Prayer = {
-  title: {
-    hebrew: 'אַחַר חֲמִשָּׁה סְפָרִים',
-    french: 'Après les cinq livres',
-    english: 'After the five books',
-  },
-  text: [closingIntroVerse, fiveBooksLine, closingBody].join('\n\n'),
+/** Rubric before the "five books" line — translated to the UI language. */
+export const RUBRIC_5BOOKS: Record<Language, string> = {
+  hebrew: 'אִם קָרָא חֲמִשָּׁה סְפָרִים שְׁלֵמִים:',
+  french: 'Si on a lu les cinq livres entièrement :',
+  english: 'If all five books were read:',
 };
 
 interface BookEnd {

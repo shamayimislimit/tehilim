@@ -4,7 +4,7 @@ import { useInstanceLink } from '@/context/instance';
 import { PageHeader } from '@/components/PageHeader';
 import { NumberGrid } from '@/components/NumberGrid';
 import { PrayerBlock } from '@/components/PrayerBlock';
-import { prayerBefore, prayerAfterBook, prayerAfterFiveBooks } from '@/data/prayers';
+import { prayerBefore, prayerAfter } from '@/data/prayers';
 import { t } from '@/data/translations';
 
 const PerekListPage = () => {
@@ -29,11 +29,8 @@ const PerekListPage = () => {
 
         <NumberGrid language={language} onPickChapter={(n) => navigate(iLink(`/perek/${n}`))} />
 
-        {/* Closing prayer AFTER the grid, split in two (PDF: after a book / after the five books) */}
-        <div className="space-y-2">
-          <PrayerBlock title={prayerAfterBook.title[language]} text={prayerAfterBook.text} settings={settings} />
-          <PrayerBlock title={prayerAfterFiveBooks.title[language]} text={prayerAfterFiveBooks.text} settings={settings} />
-        </div>
+        {/* Closing prayer AFTER the grid — one prayer covering both cases */}
+        <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} settings={settings} />
       </main>
     </div>
   );
