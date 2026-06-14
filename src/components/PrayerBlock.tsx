@@ -60,10 +60,18 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
                 </p>
               );
             }
-            // Lead line → 5 ordinals → connecting line → 5 Chumashim, with the
-            // two rows column-aligned (ראשון above בראשית …).
-            if (p === '@@BOOKMAP@@') {
+            // Lead → 5 ordinals → connecting line → 5 Chumashim, column-aligned
+            // (ראשון above בראשית …). `@@BOOKMAP@@` = all blue (grid reference);
+            // `@@BOOKMAP:N@@` = only book N blue, the rest greyed (inline, after
+            // finishing that book).
+            const bm = p.match(/^@@BOOKMAP(?::(\d+))?@@$/);
+            if (bm) {
               const tv = (s: string) => transformVerse(s, showCantillation, showNikkud);
+              const hi = bm[1] !== undefined ? Number(bm[1]) : null;
+              const cellCls = (k: number) =>
+                hi === null || hi === k
+                  ? 'whitespace-nowrap text-primary font-semibold'
+                  : 'whitespace-nowrap text-muted-foreground/40';
               return (
                 <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3">
                   {/* One grid, 5 auto-width columns: each column fits its widest
@@ -72,13 +80,13 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
                     className="grid gap-x-4 gap-y-1.5 justify-center text-center"
                     style={{ gridTemplateColumns: 'repeat(5, auto)' }}
                   >
-                    <p className="col-span-5 text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת')}</p>
+                    <p className="col-span-5 text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`o${k}`} className="whitespace-nowrap text-primary font-semibold">{tv(b.ordinal)}</span>
+                      <span key={`o${k}`} className={cellCls(k)}>{tv(b.ordinal)}</span>
                     ))}
-                    <p className="col-span-5 text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ')}</p>
+                    <p className="col-span-5 text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`c${k}`} className="whitespace-nowrap text-primary font-semibold">{tv(b.chumash)}</span>
+                      <span key={`c${k}`} className={cellCls(k)}>{tv(b.chumash)}</span>
                     ))}
                   </div>
                 </div>

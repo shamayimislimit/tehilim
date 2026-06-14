@@ -40,9 +40,6 @@ export const sectionEndVerses: Prayer = {
 וַיַּעְזְרֵם יְיָ וַיְפַלְּטֵם, יְפַלְּטֵם מֵרְשָׁעִים וְיוֹשִׁיעֵם, כִּי חָסוּ בוֹ.`,
 };
 
-const bookLine = (ordinal: string, chumash: string) =>
-  `יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר ${ordinal} שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר ${chumash}.`;
-
 const fiveBooksLine =
   'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת חֲמִשָּׁה סְפָרִים שֶׁבַּתְּהִלִּים שֶׁהֵם כְּנֶגֶד חֲמִשָּׁה חֻמְּשֵׁי תוֹרָה.';
 
@@ -119,15 +116,19 @@ export const BOOK_END: Record<number, BookEnd> = {
 
 export const isBookEnd = (chapter: number): boolean => chapter in BOOK_END;
 
+/** Index (0..4) of the book a book-ending psalm finishes, for @@BOOKMAP:idx@@. */
+const BOOK_END_INDEX: Record<number, number> = { 41: 0, 72: 1, 89: 2, 106: 3, 150: 4 };
+
 /**
  * Closing prayer for a book-ending psalm (41/72/89/106/150), or null otherwise.
- * Psalm 150 (end of all five books) uses the "five books" variant.
+ * Same table styling as the grid prayer, but only the finished book is
+ * highlighted (the others greyed) via the @@BOOKMAP:idx@@ token. Psalm 150 also
+ * appends the "five books" completion line.
  */
 export const closingPrayerFor = (chapter: number): Prayer | null => {
   const b = BOOK_END[chapter];
-  if (!b) return null;
-  const middle = chapter === 150 ? fiveBooksLine : bookLine(b.ordinal, b.chumash);
-  // No מי יתן intro here — the section-end verses already carry it.
+  const idx = BOOK_END_INDEX[chapter];
+  if (!b || idx === undefined) return null;
   const title =
     chapter === 150
       ? {
@@ -140,5 +141,12 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
           french: `Prière après ${b.fr}`,
           english: `Prayer after ${b.en}`,
         };
-  return { title, text: [middle, closingBody].join('\n\n') };
+  const parts = [
+    closingIntroVerse,
+    'יְהִי רָצוֹן יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
+    `@@BOOKMAP:${idx}@@`,
+  ];
+  if (chapter === 150) parts.push('@@RUBRIC_5BOOKS@@', fiveBooksLine);
+  parts.push(closingBody);
+  return { title, text: parts.join('\n\n') };
 };
