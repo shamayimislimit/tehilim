@@ -47,7 +47,9 @@ const FavoritesReadingPage = () => {
   const title = fav?.name || `פרק ${chap?.chapterHebrew ?? chapter}`;
 
   const favWord = language === 'hebrew' ? 'מועדף' : language === 'french' ? 'Favori' : 'Favourite';
-  const positionLabel = idx >= 0 ? `${favWord} ${idx + 1} / ${sequence.length}` : undefined;
+  // Position (and the perek number when the title is a custom name) in the header.
+  const posLabel = idx >= 0 ? `${favWord} ${idx + 1} / ${sequence.length}` : '';
+  const subtitle = fav?.name ? `פרק ${chap?.chapterHebrew} · ${posLabel}` : posLabel;
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'}>
@@ -55,7 +57,7 @@ const FavoritesReadingPage = () => {
         language={language}
         title={title}
         titleHebrew={!fav?.name}
-        subtitle={t('modeFavorites', language)}
+        subtitle={subtitle}
         backTo={iLink('/favorites')}
       />
 
@@ -66,7 +68,6 @@ const FavoritesReadingPage = () => {
           settings={settings}
           prevTarget={prevTarget}
           nextTarget={nextTarget}
-          positionLabel={positionLabel}
         />
       </main>
     </div>

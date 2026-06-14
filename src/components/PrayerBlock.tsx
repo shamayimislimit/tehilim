@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { PrayerFont, TehilimSettings } from '@/types/tehilim';
+import { TehilimSettings } from '@/types/tehilim';
 import { transformVerse } from '@/lib/textUtils';
+import { readerFontClass } from '@/lib/readerFont';
 import { TORAH_BOOK_MAP, RUBRIC_5BOOKS } from '@/data/prayers';
 import { cn } from '@/lib/utils';
-
-const FONT_CLASS: Record<PrayerFont, string> = {
-  frank: 'font-frank',
-  david: 'font-david',
-  assistant: 'font-assistant',
-};
 
 interface PrayerBlockProps {
   title: string;
@@ -22,7 +17,7 @@ interface PrayerBlockProps {
 export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: PrayerBlockProps) => {
   const [open, setOpen] = useState(defaultOpen);
   const { language, prayerFont, fontSize, showCantillation, showNikkud } = settings;
-  const fontClass = FONT_CLASS[prayerFont] ?? FONT_CLASS.frank;
+  const fontClass = readerFontClass(prayerFont, showCantillation);
   const paragraphs = text
     .split(/\n\s*\n/)
     .map((p) => transformVerse(p.trim(), showCantillation, showNikkud))

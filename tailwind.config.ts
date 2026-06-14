@@ -19,6 +19,9 @@ export default {
         assistant: ['Assistant', 'Noto Sans Hebrew', 'sans-serif'],
         frank: ['Frank Ruhl Libre', 'Noto Serif Hebrew', 'serif'],
         david: ['David Libre', 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'serif'],
+        // Complete Hebrew fonts (nikkud + cantillation) used when טעמים are shown.
+        'noto-serif-he': ['Noto Serif Hebrew', 'serif'],
+        'noto-sans-he': ['Noto Sans Hebrew', 'sans-serif'],
         cormorant: ['Cormorant Garamond', 'serif'],
         rubik: ['Rubik', 'sans-serif'],
       },

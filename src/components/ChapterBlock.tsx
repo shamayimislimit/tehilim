@@ -1,7 +1,8 @@
 import { Fragment, useState, useMemo } from 'react';
-import { PrayerFont, TehilimSettings } from '@/types/tehilim';
+import { TehilimSettings } from '@/types/tehilim';
 import { getChapter } from '@/data/tehilimData';
 import { transformVerse } from '@/lib/textUtils';
+import { readerFontClass } from '@/lib/readerFont';
 import { useFavorites } from '@/hooks/useFavorites';
 import { t } from '@/data/translations';
 import { Star } from 'lucide-react';
@@ -19,21 +20,18 @@ interface ChapterBlockProps {
   /** 1-based inclusive verse window. Used for partial chapters (e.g. 119:1-96). */
   fromVerse?: number;
   toVerse?: number;
+  /** Hide the "פרק X" title (used in the perek/favorites reader where the page
+      header + nav already show it) — the favourite star is still shown. */
+  hideTitle?: boolean;
 }
 
-const PRAYER_FONT_CLASS: Record<PrayerFont, string> = {
-  frank: 'font-frank',
-  david: 'font-david',
-  assistant: 'font-assistant',
-};
-
-export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse }: ChapterBlockProps) => {
+export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false }: ChapterBlockProps) => {
   const chap = getChapter(chapter);
   const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers } = settings;
   const { isFavorited, addFavorite, removeChapter } = useFavorites();
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const fontClass = PRAYER_FONT_CLASS[prayerFont] ?? PRAYER_FONT_CLASS.frank;
+  const fontClass = readerFontClass(prayerFont, showCantillation);
 
   const verses = useMemo(
     () => chap?.verses.map((v) => transformVerse(v, showCantillation, showNikkud)) ?? [],
@@ -62,21 +60,26 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
         compact ? 'pt-6 pb-2 border-t border-border/40 first:border-t-0 first:pt-0' : ''
       )}
     >
-      {/* Hebrew numeral first, Arabic digit in small underneath; star (perek reader only) = favorite the whole perek */}
-      <header className="relative mb-3 text-center">
-        <h2 className={cn('font-david text-foreground', compact ? 'text-xl' : 'text-2xl')} dir="rtl">
-          פרק {chap.chapterHebrew}
-        </h2>
-        <p className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground mt-0.5">
-          {t('chapter', language)} <span dir="ltr">{chap.chapter}</span>
-        </p>
-        {isPartial && (
-          <p className="text-[10px] tracking-[0.15em] font-assistant text-primary/70 mt-0.5">
-            {versesWord} <span dir="ltr">{start}–{end}</span>
-            {isPsalm119 && (
-              <span dir="rtl"> · {letterForVerse(start)?.letter}–{letterForVerse(end)?.letter}</span>
+      {/* Hebrew numeral first, Arabic digit in small underneath; star (perek reader only) = favorite the whole perek.
+          hideTitle: the page header + nav already show "פרק X", so we drop the title and keep just the star. */}
+      <header className={cn('relative', hideTitle ? 'h-6 mb-1' : 'mb-3 text-center')}>
+        {!hideTitle && (
+          <>
+            <h2 className={cn('font-david text-foreground', compact ? 'text-xl' : 'text-2xl')} dir="rtl">
+              פרק {chap.chapterHebrew}
+            </h2>
+            <p className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground mt-0.5">
+              {t('chapter', language)} <span dir="ltr">{chap.chapter}</span>
+            </p>
+            {isPartial && (
+              <p className="text-[10px] tracking-[0.15em] font-assistant text-primary/70 mt-0.5">
+                {versesWord} <span dir="ltr">{start}–{end}</span>
+                {isPsalm119 && (
+                  <span dir="rtl"> · {letterForVerse(start)?.letter}–{letterForVerse(end)?.letter}</span>
+                )}
+              </p>
             )}
-          </p>
+          </>
         )}
         {!compact && (
           <button

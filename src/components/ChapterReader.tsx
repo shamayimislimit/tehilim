@@ -2,7 +2,6 @@ import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getChapter } from '@/data/tehilimData';
 
 interface ChapterReaderProps {
   chapter: number;
@@ -15,53 +14,27 @@ interface ChapterReaderProps {
    */
   prevTarget?: number | null;
   nextTarget?: number | null;
-  /** Overrides the default "{chapter} / 150" position line. */
-  positionLabel?: string;
 }
 
-export const ChapterReader = ({
-  chapter,
-  onChange,
-  settings,
-  prevTarget,
-  nextTarget,
-  positionLabel,
-}: ChapterReaderProps) => {
+export const ChapterReader = ({ chapter, onChange, settings, prevTarget, nextTarget }: ChapterReaderProps) => {
   const usingTargets = prevTarget !== undefined || nextTarget !== undefined;
   const goPrev = usingTargets ? prevTarget ?? null : chapter > 1 ? chapter - 1 : null;
   const goNext = usingTargets ? nextTarget ?? null : chapter < 150 ? chapter + 1 : null;
 
   return (
-    <article className="space-y-6">
-      {/* Follows reading direction: in RTL "previous" sits on the right, arrows mirrored */}
+    <article className="space-y-4">
+      {/* Prev / next only — the chapter + position are shown once in the page
+          header (no duplicate label here). Arrows follow reading direction. */}
       <div className="flex items-center justify-between gap-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => goPrev != null && onChange(goPrev)}
-          disabled={goPrev == null}
-          className="font-assistant"
-        >
+        <Button variant="ghost" size="sm" onClick={() => goPrev != null && onChange(goPrev)} disabled={goPrev == null} className="font-assistant gap-1">
           <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
         </Button>
-        <span className="flex flex-col items-center gap-1">
-          <span className="font-david text-xl leading-none" dir="rtl">{getChapter(chapter)?.chapterHebrew}</span>
-          <span className="text-[10px] uppercase tracking-[0.18em] font-assistant text-muted-foreground leading-none" dir="ltr">
-            {positionLabel ?? `${chapter} / 150`}
-          </span>
-        </span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => goNext != null && onChange(goNext)}
-          disabled={goNext == null}
-          className="font-assistant"
-        >
+        <Button variant="ghost" size="sm" onClick={() => goNext != null && onChange(goNext)} disabled={goNext == null} className="font-assistant gap-1">
           <ChevronRight className="w-4 h-4 rtl:rotate-180" />
         </Button>
       </div>
 
-      <ChapterBlock chapter={chapter} settings={settings} />
+      <ChapterBlock chapter={chapter} settings={settings} hideTitle />
     </article>
   );
 };

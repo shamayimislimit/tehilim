@@ -1,13 +1,8 @@
-import { PrayerFont, TehilimSettings } from '@/types/tehilim';
+import { TehilimSettings } from '@/types/tehilim';
 import { sectionEndVerses } from '@/data/prayers';
 import { transformVerse } from '@/lib/textUtils';
+import { readerFontClass } from '@/lib/readerFont';
 import { cn } from '@/lib/utils';
-
-const FONT_CLASS: Record<PrayerFont, string> = {
-  frank: 'font-frank',
-  david: 'font-david',
-  assistant: 'font-assistant',
-};
 
 /**
  * Footer of every reading section: the 3 concluding verses (מי יתן מציון…),
@@ -16,7 +11,7 @@ const FONT_CLASS: Record<PrayerFont, string> = {
  */
 export const SectionClosing = ({ settings }: { settings: TehilimSettings }) => {
   const { language, prayerFont, fontSize, showCantillation, showNikkud } = settings;
-  const fontClass = FONT_CLASS[prayerFont] ?? FONT_CLASS.frank;
+  const fontClass = readerFontClass(prayerFont, showCantillation);
   const verses = sectionEndVerses.text
     .split(/\n\s*\n/)
     .map((v) => transformVerse(v.trim(), showCantillation, showNikkud))
