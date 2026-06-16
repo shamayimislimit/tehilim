@@ -174,16 +174,11 @@ const Home = () => {
               <Link
                 key={to}
                 to={iLink(to)}
-                className="group aspect-square rounded-2xl border border-border bg-card/60 flex flex-col items-center justify-center gap-2.5 p-4 hover:border-primary/40 hover:bg-card/80 transition-all"
+                className="group rounded-xl border border-border bg-card/60 px-3 py-2.5 flex items-center justify-center gap-2 hover:border-primary/40 hover:bg-card/80 transition-all"
               >
-                <span className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-primary" />
-                </span>
-                <span className={`${language === 'hebrew' ? 'font-david text-xl' : 'font-cormorant text-xl'} leading-tight text-center`}>
+                <Icon className="w-4 h-4 text-primary/80 shrink-0" />
+                <span className={`${language === 'hebrew' ? 'font-david text-base' : 'font-cormorant text-base'} leading-tight`}>
                   {label}
-                </span>
-                <span className="text-[11px] font-assistant text-muted-foreground">
-                  {t('prayerReadingSub', language)}
                 </span>
               </Link>
             ))}
