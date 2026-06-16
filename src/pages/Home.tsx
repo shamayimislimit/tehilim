@@ -79,6 +79,30 @@ const Home = () => {
       <Header language={language} />
 
       <main className="p-4 space-y-6">
+        {/* Yehi Ratzon — said before/after, kept first so it's seen up top */}
+        <section className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.2em] font-assistant text-muted-foreground text-center">
+            {t('yehiRatzonHeading', language)}
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { to: '/tefila/before', Icon: Sunrise, label: t('prayerBeforeLabel', language) },
+              { to: '/tefila/after', Icon: Sunset, label: t('prayerAfterLabel', language) },
+            ].map(({ to, Icon, label }) => (
+              <Link
+                key={to}
+                to={iLink(to)}
+                className="group rounded-xl border border-border bg-card/60 px-3 py-2.5 flex items-center justify-center gap-2 hover:border-primary/40 hover:bg-card/80 transition-all"
+              >
+                <Icon className="w-4 h-4 text-primary/80 shrink-0" />
+                <span className={`${language === 'hebrew' ? 'font-david text-base' : 'font-cormorant text-base'} leading-tight`}>
+                  {label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* Today — direct reading access */}
         <section className="rounded-2xl border border-primary/30 bg-card/70 shadow-[var(--shadow-soft)] overflow-hidden">
           <div className="p-4 md:p-5 pb-3">
@@ -156,30 +180,6 @@ const Home = () => {
                   </span>
                 </span>
                 <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary/60 transition-colors rtl:rotate-180 shrink-0" />
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Yehi Ratzon — before / after the reading, two squares on one row */}
-        <section className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.2em] font-assistant text-muted-foreground text-center">
-            {t('yehiRatzonHeading', language)}
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { to: '/tefila/before', Icon: Sunrise, label: t('prayerBeforeLabel', language) },
-              { to: '/tefila/after', Icon: Sunset, label: t('prayerAfterLabel', language) },
-            ].map(({ to, Icon, label }) => (
-              <Link
-                key={to}
-                to={iLink(to)}
-                className="group rounded-xl border border-border bg-card/60 px-3 py-2.5 flex items-center justify-center gap-2 hover:border-primary/40 hover:bg-card/80 transition-all"
-              >
-                <Icon className="w-4 h-4 text-primary/80 shrink-0" />
-                <span className={`${language === 'hebrew' ? 'font-david text-base' : 'font-cormorant text-base'} leading-tight`}>
-                  {label}
-                </span>
               </Link>
             ))}
           </div>
