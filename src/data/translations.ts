@@ -50,6 +50,16 @@ export const translations = {
   favoritesDesc: { hebrew: 'הפרקים שבחרתם', french: 'Vos tehilim choisis', english: 'Your chosen tehilim' } as Trans,
   chooseDay: { hebrew: 'בחרו יום', french: 'Choisissez un jour', english: 'Choose a day' } as Trans,
   back: { hebrew: 'חזרה', french: 'Retour', english: 'Back' } as Trans,
+  yehiRatzonHeading: { hebrew: 'יְהִי רָצוֹן', french: 'Yehi Ratzon', english: 'Yehi Ratzon' } as Trans,
+  prayerBeforeLabel: { hebrew: 'לִפְנֵי', french: 'Avant', english: 'Before' } as Trans,
+  prayerAfterLabel: { hebrew: 'לְאַחַר', french: 'Après', english: 'After' } as Trans,
+  prayerReadingSub: { hebrew: 'הַקְּרִיאָה', french: 'la lecture', english: 'the reading' } as Trans,
+  tikounTitle: { hebrew: 'תִּקּוּן הַכְּלָלִי', french: 'Tikoun Haklali', english: 'Tikkun HaKlali' } as Trans,
+  tikounDesc: {
+    hebrew: 'עֲשָׂרָה מִזְמוֹרֵי תְּהִלִּים',
+    french: 'Les dix psaumes du Tikoun',
+    english: 'The ten Tehilim of the Tikkun',
+  } as Trans,
   reorder: { hebrew: 'שנה סדר', french: "Réordonner", english: 'Reorder' } as Trans,
   browseAllTehilim: {
     hebrew: 'עיון בכל הפרקים',

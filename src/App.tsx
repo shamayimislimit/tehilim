@@ -14,6 +14,7 @@ import PerekListPage from "./pages/PerekListPage";
 import PerekReadingPage from "./pages/PerekReadingPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import FavoritesReadingPage from "./pages/FavoritesReadingPage";
+import PrayerPage from "./pages/PrayerPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const instanceRoutes = () => (
     <Route path="perek/:n" element={<PerekReadingPage />} />
     <Route path="favorites" element={<FavoritesPage />} />
     <Route path="favorites/:n" element={<FavoritesReadingPage />} />
+    <Route path="tefila/:which" element={<PrayerPage />} />
   </Route>
 );
 

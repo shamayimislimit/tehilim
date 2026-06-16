@@ -11,10 +11,13 @@ interface PrayerBlockProps {
   text: string; // paragraphs separated by blank lines
   settings: TehilimSettings;
   defaultOpen?: boolean;
+  /** Render flat: always open, no toggle/header (used on a dedicated prayer page
+      where the page header already shows the title). */
+  flat?: boolean;
 }
 
 /** Collapsible prayer (Yehi Ratzon before / after Tehilim), styled like the app. */
-export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: PrayerBlockProps) => {
+export const PrayerBlock = ({ title, text, settings, defaultOpen = false, flat = false }: PrayerBlockProps) => {
   const [open, setOpen] = useState(defaultOpen);
   const { language, prayerFont, fontSize, showCantillation, showNikkud } = settings;
   const fontClass = readerFontClass(prayerFont, showCantillation);
@@ -22,6 +25,18 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
     .split(/\n\s*\n/)
     .map((p) => transformVerse(p.trim(), showCantillation, showNikkud))
     .filter(Boolean);
+
+  const body = (
+    <div
+      dir="rtl"
+      className={cn(flat ? 'space-y-3' : 'px-4 pb-4 pt-1 space-y-3', fontClass)}
+      style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
+    >
+      {renderParagraphs(paragraphs, language, showCantillation, showNikkud)}
+    </div>
+  );
+
+  if (flat) return body;
 
   return (
     <div className="rounded-2xl border border-primary/25 bg-primary/[0.04] overflow-hidden">
@@ -36,12 +51,20 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
         <ChevronDown className={cn('w-4 h-4 shrink-0 text-primary transition-transform', open && 'rotate-180')} />
       </button>
 
-      {open && (
-        <div
-          dir="rtl"
-          className={cn('px-4 pb-4 pt-1 space-y-3', fontClass)}
-          style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
-        >
+      {open && body}
+    </div>
+  );
+};
+
+/** Renders the parsed prayer paragraphs (shared by flat + collapsible modes). */
+function renderParagraphs(
+  paragraphs: string[],
+  language: PrayerBlockProps['settings']['language'],
+  showCantillation: boolean,
+  showNikkud: boolean,
+) {
+  return (
+    <>
           {paragraphs.map((p, i) => {
             // Translated rubric line (comment style) before the five-books line.
             if (p === '@@RUBRIC_5BOOKS@@') {
@@ -104,8 +127,6 @@ export const PrayerBlock = ({ title, text, settings, defaultOpen = false }: Pray
               </p>
             );
           })}
-        </div>
-      )}
-    </div>
+    </>
   );
-};
+}

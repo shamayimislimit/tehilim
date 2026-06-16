@@ -15,7 +15,14 @@ import {
   Star,
   Sparkles,
   ChevronRight,
+  Sunrise,
+  Sunset,
+  ScrollText,
+  ExternalLink,
 } from 'lucide-react';
+
+/** Tikoun Haklali lives in its own deployed app (papy-jacky dedication). */
+const TIKOUN_URL = 'https://shamayimislimit.com/tikoun-haklali-papy-jacky/';
 
 const Home = () => {
   const { settings } = useAppSettings();
@@ -152,6 +159,58 @@ const Home = () => {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* Yehi Ratzon — before / after the reading, two squares on one row */}
+        <section className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.2em] font-assistant text-muted-foreground text-center">
+            {t('yehiRatzonHeading', language)}
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { to: '/tefila/before', Icon: Sunrise, label: t('prayerBeforeLabel', language) },
+              { to: '/tefila/after', Icon: Sunset, label: t('prayerAfterLabel', language) },
+            ].map(({ to, Icon, label }) => (
+              <Link
+                key={to}
+                to={iLink(to)}
+                className="group aspect-square rounded-2xl border border-border bg-card/60 flex flex-col items-center justify-center gap-2.5 p-4 hover:border-primary/40 hover:bg-card/80 transition-all"
+              >
+                <span className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                  <Icon className="w-6 h-6 text-primary" />
+                </span>
+                <span className={`${language === 'hebrew' ? 'font-david text-xl' : 'font-cormorant text-xl'} leading-tight text-center`}>
+                  {label}
+                </span>
+                <span className="text-[11px] font-assistant text-muted-foreground">
+                  {t('prayerReadingSub', language)}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Tikoun Haklali — opens its own app */}
+        <section className="space-y-3">
+          <a
+            href={TIKOUN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-2xl border border-border bg-card/60 p-4 flex items-center gap-3.5 hover:border-primary/40 hover:bg-card/80 transition-all"
+          >
+            <span className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+              <ScrollText className="w-[18px] h-[18px] text-primary" />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className={`block ${language === 'hebrew' ? 'font-david text-lg' : 'font-cormorant text-lg'} leading-tight`}>
+                {t('tikounTitle', language)}
+              </span>
+              <span className="block text-xs font-assistant text-muted-foreground truncate">
+                {t('tikounDesc', language)}
+              </span>
+            </span>
+            <ExternalLink className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary/60 transition-colors shrink-0" />
+          </a>
         </section>
 
       </main>
