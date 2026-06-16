@@ -1,13 +1,12 @@
-import { Fragment, useState, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import { TehilimSettings } from '@/types/tehilim';
 import { getChapter } from '@/data/tehilimData';
 import { transformVerse } from '@/lib/textUtils';
+import { toHebrewNumeral } from '@/lib/hebrewNumeral';
 import { readerFontClass } from '@/lib/readerFont';
-import { useFavorites } from '@/hooks/useFavorites';
 import { t } from '@/data/translations';
-import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { AddFavoriteDialog } from '@/components/AddFavoriteDialog';
+import { FavoriteToggle } from '@/components/FavoriteToggle';
 import { PrayerBlock } from '@/components/PrayerBlock';
 import { PSALM_119_CHAPTER, isLetterStart, letterForVerse } from '@/data/psalm119Letters';
 import { isBookEnd, closingPrayerFor } from '@/data/prayers';
@@ -23,13 +22,13 @@ interface ChapterBlockProps {
   /** Hide the "פרק X" title (used in the perek/favorites reader where the page
       header + nav already show it) — the favourite star is still shown. */
   hideTitle?: boolean;
+  /** Hide the favourite star (used when the surrounding nav bar renders it instead). */
+  hideStar?: boolean;
 }
 
-export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false }: ChapterBlockProps) => {
+export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false, hideStar = false }: ChapterBlockProps) => {
   const chap = getChapter(chapter);
   const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers } = settings;
-  const { isFavorited, addFavorite, removeChapter } = useFavorites();
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const fontClass = readerFontClass(prayerFont, showCantillation);
 
@@ -40,7 +39,6 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
 
   if (!chap) return null;
 
-  const fav = isFavorited(chapter);
   const isPsalm119 = chap.chapter === PSALM_119_CHAPTER;
   // Clamp the requested verse window to what the chapter actually has.
   const start = Math.max(1, fromVerse ?? 1);
@@ -81,18 +79,8 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
             )}
           </>
         )}
-        {!compact && (
-          <button
-            type="button"
-            aria-label={fav ? t('removeFromFavorites', language) : t('addToFavorites', language)}
-            onClick={() => (fav ? removeChapter(chapter) : setDialogOpen(true))}
-            className={cn(
-              'absolute top-0.5 end-0 transition-colors',
-              fav ? 'text-primary' : 'text-muted-foreground/40 hover:text-primary/70'
-            )}
-          >
-            <Star className="w-5 h-5" fill={fav ? 'currentColor' : 'none'} />
-          </button>
+        {!compact && !hideStar && (
+          <FavoriteToggle chapter={chapter} language={language} className="absolute top-0.5 end-0" />
         )}
       </header>
 
@@ -124,8 +112,8 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
               )}
               <p className="text-right text-foreground">
                 {showVerseNumbers && (
-                  <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none">
-                    {verseNum}.
+                  <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none" dir="rtl">
+                    ({toHebrewNumeral(verseNum)})
                   </span>
                 )}
                 {text}
@@ -139,16 +127,6 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
         <div className="mt-5">
           <PrayerBlock title={closing.title[language]} text={closing.text} settings={settings} />
         </div>
-      )}
-
-      {!compact && (
-        <AddFavoriteDialog
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-          chapter={chapter}
-          language={language}
-          onSave={(name) => addFavorite(chapter, name)}
-        />
       )}
     </section>
   );

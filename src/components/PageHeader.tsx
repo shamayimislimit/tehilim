@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Language } from '@/types/tehilim';
 import { t } from '@/data/translations';
@@ -6,7 +7,7 @@ import { ChevronLeft } from 'lucide-react';
 interface PageHeaderProps {
   language: Language;
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   backTo: string;
   /** When set, the back control runs this instead of navigating to `backTo`
       (e.g. go back in history to wherever the user came from). */

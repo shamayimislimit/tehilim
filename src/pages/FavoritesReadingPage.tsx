@@ -6,7 +6,6 @@ import { PageHeader } from '@/components/PageHeader';
 import { ChapterReader } from '@/components/ChapterReader';
 import { useFavorites } from '@/hooks/useFavorites';
 import { getChapter } from '@/data/tehilimData';
-import { t } from '@/data/translations';
 
 /**
  * Reads a favourited chapter, but prev/next walk the FAVOURITES list (in display
@@ -41,15 +40,11 @@ const FavoritesReadingPage = () => {
   const prevTarget = idx > 0 ? sequence[idx - 1] : null;
   const nextTarget = idx >= 0 && idx < sequence.length - 1 ? sequence[idx + 1] : null;
 
-  // Title = the user's label for this favourite, else "פרק <heb>".
+  // Top header = the user's label, or the default "פרק <heb>" when unnamed.
   const fav = favorites.find((f) => f.chapter === chapter);
   const chap = getChapter(chapter);
-  const title = fav?.name || `פרק ${chap?.chapterHebrew ?? chapter}`;
-
-  const favWord = language === 'hebrew' ? 'מועדף' : language === 'french' ? 'Favori' : 'Favourite';
-  // Position (and the perek number when the title is a custom name) in the header.
-  const posLabel = idx >= 0 ? `${favWord} ${idx + 1} / ${sequence.length}` : '';
-  const subtitle = fav?.name ? `פרק ${chap?.chapterHebrew} · ${posLabel}` : posLabel;
+  const numeral = chap?.chapterHebrew ?? chapter;
+  const title = fav?.name || `פרק ${numeral}`;
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'}>
@@ -57,17 +52,27 @@ const FavoritesReadingPage = () => {
         language={language}
         title={title}
         titleHebrew={!fav?.name}
-        subtitle={subtitle}
         backTo={iLink('/favorites')}
       />
 
       <main className="p-4">
+        {/* Nav bar shows the perek + position within the favourites list; the star
+            sits at the right of the bar, exactly like the by-number reader. */}
         <ChapterReader
           chapter={chapter}
           onChange={(next) => navigate(iLink(`/favorites/${next}`))}
           settings={settings}
           prevTarget={prevTarget}
           nextTarget={nextTarget}
+          showStar
+          label={
+            <>
+              <span className="block font-david text-lg leading-tight" dir="rtl">פרק {numeral}</span>
+              <span className="block text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground" dir="ltr">
+                {idx + 1} / {sequence.length}
+              </span>
+            </>
+          }
         />
       </main>
     </div>
