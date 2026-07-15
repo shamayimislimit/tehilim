@@ -50,8 +50,11 @@ export const sectionEndVerses: Prayer = {
   textPhonetic: prayersPhonetic.sectionEndVerses,
 };
 
+// The "if all five books were read" line — a continuation of the opening
+// "יְהִי רָצוֹן…שֶׁתְּרַחֵם עָלֵינוּ," lead line (which is said before the bookmap),
+// so it does NOT repeat that prefix; it flows straight into closingBody ("כְּאִלּוּ…").
 const fiveBooksLine =
-  'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ, וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת חֲמִשָּׁה סְפָרִים שֶׁבַּתְּהִלִּים שֶׁהֵם כְּנֶגֶד חֲמִשָּׁה חֻמְּשֵׁי תוֹרָה.';
+  'וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת חֲמִשָּׁה סְפָרִים שֶׁבִּתְהִלִּים שֶׁהֵם כְּנֶגֶד חֲמִשָּׁה חֻמָּשַׁי תּוֹרָה';
 
 // The 13-middot divine Name kept fully vocalised (rendered via @@SHEM0/1@@ so
 // stripNikkud never bares the Tetragrammaton); the te’amim follow the
