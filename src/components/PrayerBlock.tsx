@@ -90,21 +90,26 @@ function renderParagraphs(
                 hi === null || hi === k
                   ? 'whitespace-nowrap text-primary font-semibold'
                   : 'whitespace-nowrap text-muted-foreground/40';
+              // Book-word cells shrink responsively so the 5 columns always fit
+              // a phone width (they were clipped by the parent overflow-hidden on
+              // mobile); capped at 0.72em on wide screens. overflow-x-auto is a
+              // last-resort safety net (tiny phones / very large reader fonts).
+              const cellFont = { fontSize: 'clamp(11px, 3vw, 0.72em)' } as const;
               return (
-                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3">
+                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3 overflow-x-auto">
                   {/* One grid, 5 auto-width columns: each column fits its widest
                       word so nothing is squeezed; ordinal stays above its Chumash. */}
                   <div
-                    className="grid gap-x-4 gap-y-1.5 justify-center text-center"
+                    className="grid gap-x-1.5 gap-y-1.5 justify-center text-center"
                     style={{ gridTemplateColumns: 'repeat(5, auto)' }}
                   >
-                    <p className="col-span-5 text-foreground">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר')}</p>
+                    <p className="col-span-5 text-foreground text-[0.85em]">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`o${k}`} className={cellCls(k)}>{tv(b.ordinal)}</span>
+                      <span key={`o${k}`} className={cellCls(k)} style={cellFont}>{tv(b.ordinal)}</span>
                     ))}
-                    <p className="col-span-5 text-foreground">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר')}</p>
+                    <p className="col-span-5 text-foreground text-[0.85em]">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר')}</p>
                     {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`c${k}`} className={cellCls(k)}>{tv(b.chumash)}</span>
+                      <span key={`c${k}`} className={cellCls(k)} style={cellFont}>{tv(b.chumash)}</span>
                     ))}
                   </div>
                 </div>
