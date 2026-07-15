@@ -105,8 +105,8 @@ export const prayerAfter: Prayer = {
     'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     '@@BOOKMAP@@',
     '@@RUBRIC_5BOOKS@@',
-    '@@SEP@@', // small separation after the "if five books" rubric
     fiveBooksLine,
+    '@@SEP@@', // separation AFTER the five-books line — it is added only if all 5 books were read
     closingBody,
   ].join('\n\n'),
   textPhonetic: [
@@ -115,8 +115,8 @@ export const prayerAfter: Prayer = {
     prayersPhonetic.leadLine,
     '@@BOOKMAP@@',
     '@@RUBRIC_5BOOKS@@',
-    '@@SEP@@',
     prayersPhonetic.fiveBooksLine,
+    '@@SEP@@',
     prayersPhonetic.closingBody,
   ].join('\n\n'),
 };
@@ -184,8 +184,8 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
     `@@BOOKMAP:${idx}@@`,
   ];
   if (chapter === 150) {
-    parts.push('@@RUBRIC_5BOOKS@@', '@@SEP@@', fiveBooksLine);
-    partsP.push('@@RUBRIC_5BOOKS@@', '@@SEP@@', prayersPhonetic.fiveBooksLine);
+    parts.push('@@RUBRIC_5BOOKS@@', fiveBooksLine, '@@SEP@@');
+    partsP.push('@@RUBRIC_5BOOKS@@', prayersPhonetic.fiveBooksLine, '@@SEP@@');
   }
   parts.push(closingBody);
   partsP.push(prayersPhonetic.closingBody);
