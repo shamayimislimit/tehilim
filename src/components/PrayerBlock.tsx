@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { TehilimSettings } from '@/types/tehilim';
-import { transformVerse } from '@/lib/textUtils';
+import { transformVerse, stripCantillation } from '@/lib/textUtils';
 import { readerFontClass } from '@/lib/readerFont';
-import { TORAH_BOOK_MAP, RUBRIC_5BOOKS } from '@/data/prayers';
+import { TORAH_BOOK_MAP, RUBRIC_5BOOKS, MIDDOT_SHEM } from '@/data/prayers';
 import { cn } from '@/lib/utils';
 
 interface PrayerBlockProps {
@@ -126,20 +126,30 @@ function renderParagraphs(
                 </div>
               );
             }
-            // Spans wrapped in [[ … ]] are rubrics/instructions (book choices,
-            // (פלונית) placeholders…) — rendered smaller & muted, like the PDF.
-            const parts = p.split(/\[\[(.+?)\]\]/g);
+            // Inline markers inside a paragraph:
+            //  [[ … ]]    → rubric/instruction (small, muted grey, like the PDF)
+            //  @@SHEMn@@  → the 13-middot Tetragrammaton, kept fully vocalised
+            //               (never nikkud-stripped → never shown bare); its te'am
+            //               follows the cantillation toggle. "middot jamais nu".
+            const parts = p.split(/(\[\[.+?\]\]|@@SHEM[01]@@)/g);
             return (
               <p key={i} className="text-right text-foreground">
-                {parts.map((part, j) =>
-                  j % 2 === 1 ? (
-                    <span key={j} className="font-assistant text-[0.7em] text-muted-foreground/70 align-middle">
-                      {part}
-                    </span>
-                  ) : (
-                    <span key={j}>{part}</span>
-                  )
-                )}
+                {parts.map((part, j) => {
+                  const rubric = /^\[\[(.+?)\]\]$/.exec(part);
+                  if (rubric) {
+                    return (
+                      <span key={j} className="font-assistant text-[0.7em] text-muted-foreground/70 align-middle">
+                        {rubric[1]}
+                      </span>
+                    );
+                  }
+                  const shem = /^@@SHEM([01])@@$/.exec(part);
+                  if (shem) {
+                    const name = MIDDOT_SHEM[Number(shem[1])];
+                    return <span key={j}>{showCantillation ? name : stripCantillation(name)}</span>;
+                  }
+                  return <span key={j}>{part}</span>;
+                })}
               </p>
             );
           })}
