@@ -66,6 +66,17 @@ function renderParagraphs(
   return (
     <>
           {paragraphs.map((p, i) => {
+            // Distinct divider (e.g. between the מי יתן מציון verse and the
+            // Yehi Ratzon that follows it) — a short centered rule with extra room.
+            if (p === '@@SEP@@') {
+              return (
+                <div key={i} className="flex items-center justify-center gap-2 py-1" aria-hidden="true">
+                  <span className="h-px w-16 bg-primary/30" />
+                  <span className="h-1 w-1 rounded-full bg-primary/40" />
+                  <span className="h-px w-16 bg-primary/30" />
+                </div>
+              );
+            }
             // Translated rubric line (comment style) before the five-books line.
             if (p === '@@RUBRIC_5BOOKS@@') {
               return (

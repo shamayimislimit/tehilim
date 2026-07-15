@@ -83,6 +83,7 @@ export const prayerAfter: Prayer = {
   // covering both cases (no separate button).
   text: [
     closingIntroVerse,
+    '@@SEP@@', // distinct divider between the מי יתן מציון verse and the Yehi Ratzon
     'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     '@@BOOKMAP@@',
     '@@RUBRIC_5BOOKS@@',
@@ -143,6 +144,7 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
         };
   const parts = [
     closingIntroVerse,
+    '@@SEP@@', // distinct divider between the מי יתן מציון verse and the Yehi Ratzon
     'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     `@@BOOKMAP:${idx}@@`,
   ];
