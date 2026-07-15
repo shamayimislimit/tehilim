@@ -24,7 +24,7 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
   return (
     <div className="space-y-4">
       {/* Yehi Ratzon said before the reading */}
-      <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} settings={settings} />
+      <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} textPhonetic={prayerBefore.textPhonetic} settings={settings} />
 
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
         <span>{t('chaptersOfTheDay', language)}</span>

@@ -150,7 +150,7 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
 
       {closing && (
         <div className="mt-5">
-          <PrayerBlock title={closing.title[language]} text={closing.text} settings={settings} />
+          <PrayerBlock title={closing.title[language]} text={closing.text} textPhonetic={closing.textPhonetic} settings={settings} />
         </div>
       )}
     </section>

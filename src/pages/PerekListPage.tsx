@@ -25,12 +25,12 @@ const PerekListPage = () => {
 
       <main className="p-4 space-y-4">
         {/* Opening prayer ABOVE the grid */}
-        <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} settings={settings} />
+        <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} textPhonetic={prayerBefore.textPhonetic} settings={settings} />
 
         <NumberGrid language={language} onPickChapter={(n) => navigate(iLink(`/perek/${n}`))} />
 
         {/* Closing prayer AFTER the grid — one prayer covering both cases */}
-        <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} settings={settings} />
+        <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} textPhonetic={prayerAfter.textPhonetic} settings={settings} />
       </main>
     </div>
   );

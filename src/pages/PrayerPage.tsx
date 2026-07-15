@@ -27,7 +27,7 @@ const PrayerPage = () => {
 
       <main className="p-4">
         <div className="rounded-2xl border border-primary/25 bg-primary/[0.04] px-4 py-4">
-          <PrayerBlock title={prayer.title[language]} text={prayer.text} settings={settings} flat />
+          <PrayerBlock title={prayer.title[language]} text={prayer.text} textPhonetic={prayer.textPhonetic} settings={settings} flat />
         </div>
       </main>
     </div>

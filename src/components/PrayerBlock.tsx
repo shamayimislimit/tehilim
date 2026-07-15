@@ -3,12 +3,14 @@ import { ChevronDown } from 'lucide-react';
 import { TehilimSettings } from '@/types/tehilim';
 import { transformVerse, stripCantillation } from '@/lib/textUtils';
 import { readerFontClass } from '@/lib/readerFont';
-import { TORAH_BOOK_MAP, RUBRIC_5BOOKS, MIDDOT_SHEM } from '@/data/prayers';
+import { TORAH_BOOK_MAP, TORAH_BOOK_MAP_PHONETIC, RUBRIC_5BOOKS, MIDDOT_SHEM } from '@/data/prayers';
 import { cn } from '@/lib/utils';
 
 interface PrayerBlockProps {
   title: string;
   text: string; // paragraphs separated by blank lines
+  /** Phonetic (Latin) version; when phonetic mode is on and this exists, it replaces `text`. */
+  textPhonetic?: string;
   settings: TehilimSettings;
   defaultOpen?: boolean;
   /** Render flat: always open, no toggle/header (used on a dedicated prayer page
@@ -17,22 +19,23 @@ interface PrayerBlockProps {
 }
 
 /** Collapsible prayer (Yehi Ratzon before / after Tehilim), styled like the app. */
-export const PrayerBlock = ({ title, text, settings, defaultOpen = false, flat = false }: PrayerBlockProps) => {
+export const PrayerBlock = ({ title, text, textPhonetic, settings, defaultOpen = false, flat = false }: PrayerBlockProps) => {
   const [open, setOpen] = useState(defaultOpen);
-  const { language, prayerFont, fontSize, showCantillation, showNikkud } = settings;
+  const { language, prayerFont, fontSize, showCantillation, showNikkud, phoneticMode } = settings;
+  const phon = phoneticMode && !!textPhonetic;
   const fontClass = readerFontClass(prayerFont, showCantillation);
-  const paragraphs = text
+  const paragraphs = (phon ? textPhonetic! : text)
     .split(/\n\s*\n/)
-    .map((p) => transformVerse(p.trim(), showCantillation, showNikkud))
+    .map((p) => (phon ? p.trim() : transformVerse(p.trim(), showCantillation, showNikkud)))
     .filter(Boolean);
 
   const body = (
     <div
-      dir="rtl"
-      className={cn(flat ? 'space-y-3' : 'px-4 pb-4 pt-1 space-y-3', fontClass)}
-      style={{ fontSize: `${fontSize}px`, lineHeight: 1.9 }}
+      dir={phon ? 'ltr' : 'rtl'}
+      className={cn(flat ? 'space-y-3' : 'px-4 pb-4 pt-1 space-y-3', phon ? 'font-cormorant text-left' : fontClass)}
+      style={{ fontSize: `${fontSize}px`, lineHeight: phon ? 1.7 : 1.9 }}
     >
-      {renderParagraphs(paragraphs, language, showCantillation, showNikkud)}
+      {renderParagraphs(paragraphs, language, showCantillation, showNikkud, phon)}
     </div>
   );
 
@@ -62,6 +65,7 @@ function renderParagraphs(
   language: PrayerBlockProps['settings']['language'],
   showCantillation: boolean,
   showNikkud: boolean,
+  phon: boolean,
 ) {
   return (
     <>
@@ -82,7 +86,7 @@ function renderParagraphs(
               return (
                 <p
                   key={i}
-                  dir={language === 'hebrew' ? 'rtl' : 'ltr'}
+                  dir={!phon && language === 'hebrew' ? 'rtl' : 'ltr'}
                   className="font-assistant text-[0.78em] text-muted-foreground/70 text-center"
                 >
                   {RUBRIC_5BOOKS[language]}
@@ -106,21 +110,27 @@ function renderParagraphs(
               // mobile); capped at 0.72em on wide screens. overflow-x-auto is a
               // last-resort safety net (tiny phones / very large reader fonts).
               const cellFont = { fontSize: 'clamp(11px, 3vw, 0.72em)' } as const;
+              // Phonetic mode: same column-aligned table, Latin (LTR) words.
+              const P = phon ? TORAH_BOOK_MAP_PHONETIC : null;
+              const leadLine = P ? P.lead : tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר');
+              const connectLine = P ? P.connect : tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר');
+              const ordinals = P ? P.ordinals : TORAH_BOOK_MAP.map((b) => tv(b.ordinal));
+              const chumashim = P ? P.chumashim : TORAH_BOOK_MAP.map((b) => tv(b.chumash));
               return (
-                <div key={i} dir="rtl" className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3 overflow-x-auto">
+                <div key={i} dir={phon ? 'ltr' : 'rtl'} className="my-1 rounded-xl border border-border/40 bg-background/40 px-3 py-3 overflow-x-auto">
                   {/* One grid, 5 auto-width columns: each column fits its widest
                       word so nothing is squeezed; ordinal stays above its Chumash. */}
                   <div
                     className="grid gap-x-1.5 gap-y-1.5 justify-center text-center"
                     style={{ gridTemplateColumns: 'repeat(5, auto)' }}
                   >
-                    <p className="col-span-5 text-foreground text-[0.85em]">{tv('וִיהֵא חָשׁוּב לְפָנֶיךָ קְרִיאַת סֵפֶר')}</p>
-                    {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`o${k}`} className={cellCls(k)} style={cellFont}>{tv(b.ordinal)}</span>
+                    <p className="col-span-5 text-foreground text-[0.85em]">{leadLine}</p>
+                    {ordinals.map((o, k) => (
+                      <span key={`o${k}`} className={cellCls(k)} style={cellFont}>{o}</span>
                     ))}
-                    <p className="col-span-5 text-foreground text-[0.85em]">{tv('שֶׁבַּתְּהִלִּים שֶׁקָּרָאנוּ לְפָנֶיךָ, שֶׁהוּא כְּנֶגֶד סֵפֶר')}</p>
-                    {TORAH_BOOK_MAP.map((b, k) => (
-                      <span key={`c${k}`} className={cellCls(k)} style={cellFont}>{tv(b.chumash)}</span>
+                    <p className="col-span-5 text-foreground text-[0.85em]">{connectLine}</p>
+                    {chumashim.map((c, k) => (
+                      <span key={`c${k}`} className={cellCls(k)} style={cellFont}>{c}</span>
                     ))}
                   </div>
                 </div>
@@ -133,7 +143,7 @@ function renderParagraphs(
             //               follows the cantillation toggle. "middot jamais nu".
             const parts = p.split(/(\[\[.+?\]\]|@@SHEM[01]@@)/g);
             return (
-              <p key={i} className="text-right text-foreground">
+              <p key={i} dir={phon ? 'ltr' : undefined} className={cn(phon ? 'text-left' : 'text-right', 'text-foreground')}>
                 {parts.map((part, j) => {
                   const rubric = /^\[\[(.+?)\]\]$/.exec(part);
                   if (rubric) {

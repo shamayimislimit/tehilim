@@ -1,10 +1,16 @@
 import { Language } from '@/types/tehilim';
+import prayersPhonetic from '@/data/prayers.phonetic.json';
 
 export interface Prayer {
   title: Record<Language, string>;
   /** Paragraphs separated by a blank line. */
   text: string;
+  /** French-Sephardi phonetic version (same token structure), for phonetic mode. */
+  textPhonetic?: string;
 }
+
+/** Phonetic (Latin) forms of the @@BOOKMAP@@ table, for phonetic mode. */
+export const TORAH_BOOK_MAP_PHONETIC = prayersPhonetic.bookMap;
 
 /** Yehi Ratzon said BEFORE reading Tehilim — shown at the top of every section. */
 export const prayerBefore: Prayer = {
@@ -18,6 +24,7 @@ export const prayerBefore: Prayer = {
 @@SEP@@
 
 לְכוּ נְרַנְּנָה לַיְיָ נָרִיעָה לְצוּר יִשְׁעֵנוּ. נְקַדְּמָה פָנָיו בְּתוֹדָה בִּזְמִרוֹת נָרִיעַ לוֹ. כִּי אֵל גָּדוֹל יְיָ וּמֶלֶךְ גָּדוֹל עַל כָּל אֱלֹהִים. וְאַתָּה קָדוֹשׁ יוֹשֵׁב תְּהִלּוֹת יִשְׂרָאֵל.`,
+  textPhonetic: prayersPhonetic.prayerBefore,
 };
 
 // ── Closing prayer (תפילה לאחר אמירת תהילים) ──────────────────────────────
@@ -40,6 +47,7 @@ export const sectionEndVerses: Prayer = {
 וּתְשׁוּעַת צַדִּיקִים מֵיְיָ, מָעוּזָּם בְּעֵת צָרָה.
 
 וַיַּעְזְרֵם יְיָ וַיְפַלְּטֵם, יְפַלְּטֵם מֵרְשָׁעִים וְיוֹשִׁיעֵם, כִּי חָסוּ בוֹ.`,
+  textPhonetic: prayersPhonetic.sectionEndVerses,
 };
 
 const fiveBooksLine =
@@ -96,6 +104,15 @@ export const prayerAfter: Prayer = {
     '@@RUBRIC_5BOOKS@@',
     fiveBooksLine,
     closingBody,
+  ].join('\n\n'),
+  textPhonetic: [
+    prayersPhonetic.closingIntroVerse,
+    '@@SEP@@',
+    prayersPhonetic.leadLine,
+    '@@BOOKMAP@@',
+    '@@RUBRIC_5BOOKS@@',
+    prayersPhonetic.fiveBooksLine,
+    prayersPhonetic.closingBody,
   ].join('\n\n'),
 };
 
@@ -155,7 +172,17 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
     'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     `@@BOOKMAP:${idx}@@`,
   ];
-  if (chapter === 150) parts.push('@@RUBRIC_5BOOKS@@', fiveBooksLine);
+  const partsP = [
+    prayersPhonetic.closingIntroVerse,
+    '@@SEP@@',
+    prayersPhonetic.leadLine,
+    `@@BOOKMAP:${idx}@@`,
+  ];
+  if (chapter === 150) {
+    parts.push('@@RUBRIC_5BOOKS@@', fiveBooksLine);
+    partsP.push('@@RUBRIC_5BOOKS@@', prayersPhonetic.fiveBooksLine);
+  }
   parts.push(closingBody);
-  return { title, text: parts.join('\n\n') };
+  partsP.push(prayersPhonetic.closingBody);
+  return { title, text: parts.join('\n\n'), textPhonetic: partsP.join('\n\n') };
 };
