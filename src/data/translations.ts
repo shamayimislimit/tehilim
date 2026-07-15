@@ -21,6 +21,7 @@ export const translations = {
   showCantillation: { hebrew: 'הצג טעמים', french: 'Cantillation (טעמים)', english: 'Cantillation marks' } as Trans,
   showNikkud: { hebrew: 'הצג ניקוד', french: 'Voyelles (ניקוד)', english: 'Vowels' } as Trans,
   showVerseNumbers: { hebrew: 'הצג מספרי פסוקים', french: 'Numéros de versets', english: 'Verse numbers' } as Trans,
+  phonetic: { hebrew: 'תעתיק פונטי', french: 'Phonétique', english: 'Phonetic' } as Trans,
   language: { hebrew: 'שפה', french: 'Langue', english: 'Language' } as Trans,
   share: { hebrew: 'שתף', french: 'Partager', english: 'Share' } as Trans,
   install: { hebrew: 'התקן', french: 'Installer', english: 'Install' } as Trans,

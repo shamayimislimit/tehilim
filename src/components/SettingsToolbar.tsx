@@ -9,6 +9,7 @@ import { Language, PrayerFont, TehilimSettings } from '@/types/tehilim';
 import { t } from '@/data/translations';
 import config from '@/config.json';
 import { useInstance } from '@/context/instance';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface SettingsToolbarProps {
@@ -23,7 +24,7 @@ const PRAYER_FONT_OPTIONS: { value: PrayerFont; labelKey: 'fontFrank' | 'fontDav
 ];
 
 export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) => {
-  const { language, fontSize, prayerFont, showCantillation, showNikkud, showVerseNumbers } = settings;
+  const { language, fontSize, prayerFont, showCantillation, showNikkud, showVerseNumbers, phoneticMode } = settings;
   const instance = useInstance();
   const supportedLanguages = config.settings.supportedLanguages as Language[];
   const isRtl = language === 'hebrew';
@@ -109,13 +110,20 @@ export const SettingsToolbar = ({ settings, onUpdate }: SettingsToolbarProps) =>
 
           {/* Display toggles */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
-              <Label className="text-xs font-cormorant font-semibold">{t('showCantillation', language)}</Label>
-              <Switch checked={showCantillation} onCheckedChange={(v) => onUpdate({ showCantillation: v })} />
+            {/* Phonetic (Latin transliteration) replaces the Hebrew text →
+                mutually exclusive with the cantillation/vowels toggles, which
+                don't apply to Latin and are disabled while it's on. */}
+            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-primary/[0.06] border border-primary/20">
+              <Label className="text-xs font-cormorant font-semibold">{t('phonetic', language)}</Label>
+              <Switch checked={phoneticMode} onCheckedChange={(v) => onUpdate({ phoneticMode: v })} />
             </div>
-            <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
+            <div className={cn('flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30 transition-opacity', phoneticMode && 'opacity-40')}>
+              <Label className="text-xs font-cormorant font-semibold">{t('showCantillation', language)}</Label>
+              <Switch checked={showCantillation} disabled={phoneticMode} onCheckedChange={(v) => onUpdate({ showCantillation: v })} />
+            </div>
+            <div className={cn('flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30 transition-opacity', phoneticMode && 'opacity-40')}>
               <Label className="text-xs font-cormorant font-semibold">{t('showNikkud', language)}</Label>
-              <Switch checked={showNikkud} onCheckedChange={(v) => onUpdate({ showNikkud: v })} />
+              <Switch checked={showNikkud} disabled={phoneticMode} onCheckedChange={(v) => onUpdate({ showNikkud: v })} />
             </div>
             <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/30">
               <Label className="text-xs font-cormorant font-semibold">{t('showVerseNumbers', language)}</Label>

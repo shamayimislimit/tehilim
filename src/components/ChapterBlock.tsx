@@ -4,6 +4,7 @@ import { getChapter } from '@/data/tehilimData';
 import { transformVerse } from '@/lib/textUtils';
 import { toHebrewNumeral } from '@/lib/hebrewNumeral';
 import { readerFontClass } from '@/lib/readerFont';
+import { usePhonetic } from '@/lib/usePhonetic';
 import { t } from '@/data/translations';
 import { cn } from '@/lib/utils';
 import { FavoriteToggle } from '@/components/FavoriteToggle';
@@ -28,9 +29,16 @@ interface ChapterBlockProps {
 
 export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false, hideStar = false }: ChapterBlockProps) => {
   const chap = getChapter(chapter);
-  const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers } = settings;
+  const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers, phoneticMode } = settings;
 
   const fontClass = readerFontClass(prayerFont, showCantillation);
+
+  // Phonetic mode replaces the Hebrew with an LTR Latin transliteration line
+  // (dataset lazy-loaded only when the toggle is on). Fall back to Hebrew while
+  // the dataset is still loading or if this chapter is somehow absent.
+  const phonetic = usePhonetic(phoneticMode);
+  const phoneticVerses = phoneticMode ? phonetic?.[String(chapter)] : undefined;
+  const usePhon = phoneticMode && !!phoneticVerses;
 
   const verses = useMemo(
     () => chap?.verses.map((v) => transformVerse(v, showCantillation, showNikkud)) ?? [],
@@ -85,9 +93,9 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
       </header>
 
       <div
-        dir="rtl"
-        className={cn('space-y-2.5', fontClass)}
-        style={{ fontSize: `${fontSize}px`, lineHeight: 1.85 }}
+        dir={usePhon ? 'ltr' : 'rtl'}
+        className={cn('space-y-2.5', usePhon ? 'font-cormorant text-left' : fontClass)}
+        style={{ fontSize: `${fontSize}px`, lineHeight: usePhon ? 1.7 : 1.85 }}
       >
         {slice.map((text, i) => {
           const verseNum = start + i;
@@ -97,27 +105,44 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
             <Fragment key={verseNum}>
               {letter && (
                 <div
-                  className="flex items-center justify-center gap-3 pt-5 pb-1 first:pt-1 select-none"
-                  dir="rtl"
+                  className={cn('flex items-center justify-center gap-3 pt-5 pb-1 first:pt-1 select-none')}
+                  dir={usePhon ? 'ltr' : 'rtl'}
                 >
                   <span className="h-px w-8 bg-primary/25" />
-                  <span className="font-david text-2xl leading-none text-primary">{letter.letter}</span>
-                  {language !== 'hebrew' && (
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground">
-                      {letter.latin}
-                    </span>
+                  {usePhon ? (
+                    <span className="text-sm uppercase tracking-[0.2em] font-cormorant font-semibold text-primary">{letter.latin}</span>
+                  ) : (
+                    <>
+                      <span className="font-david text-2xl leading-none text-primary">{letter.letter}</span>
+                      {language !== 'hebrew' && (
+                        <span className="text-[10px] uppercase tracking-[0.2em] font-assistant text-muted-foreground">
+                          {letter.latin}
+                        </span>
+                      )}
+                    </>
                   )}
                   <span className="h-px w-8 bg-primary/25" />
                 </div>
               )}
-              <p className="text-right text-foreground">
-                {showVerseNumbers && (
-                  <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none" dir="rtl">
-                    ({toHebrewNumeral(verseNum)})
-                  </span>
-                )}
-                {text}
-              </p>
+              {usePhon ? (
+                <p className="text-left text-foreground" dir="ltr">
+                  {showVerseNumbers && (
+                    <span className="font-assistant text-xs text-primary/70 align-baseline me-2 select-none">
+                      {verseNum}.
+                    </span>
+                  )}
+                  {phoneticVerses![verseNum - 1] ?? ''}
+                </p>
+              ) : (
+                <p className="text-right text-foreground">
+                  {showVerseNumbers && (
+                    <span className="font-assistant text-xs text-primary/70 align-baseline ms-2 me-1 select-none" dir="rtl">
+                      ({toHebrewNumeral(verseNum)})
+                    </span>
+                  )}
+                  {text}
+                </p>
+              )}
             </Fragment>
           );
         })}
