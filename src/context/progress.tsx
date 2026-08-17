@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { FavoritePerek, TehilimSettings } from '@/types/tehilim';
 import { buildDefaultSettings } from '@/lib/settingsDefaults';
+import { TOTAL_CHAPTERS } from '@/data/tehilimData';
 import { useAuth } from '@/context/auth';
 import { getProgress, putProgress } from '@/lib/api';
 
@@ -63,6 +64,8 @@ interface ProgressValue {
   removeFavorite: (id: string) => void;
   removeChapter: (chapter: number) => void;
   renameFavorite: (id: string, name: string) => void;
+  /** Edit an existing favorite in place: its chapter, its label, or both. */
+  updateFavorite: (id: string, updates: { chapter?: number; name?: string }) => void;
   isFavorited: (chapter: number) => boolean;
   /** Reorder favorites to match the given id order (drag & drop). */
   reorderFavorites: (orderedIds: string[]) => void;
@@ -167,6 +170,21 @@ export const ProgressProvider = ({ slug, children }: { slug: string; children: R
     removeChapter: (chapter) => setFavorites((prev) => prev.filter((f) => f.chapter !== chapter)),
     renameFavorite: (id, name) =>
       setFavorites((prev) => prev.map((f) => (f.id === id ? { ...f, name: name.trim() } : f))),
+    updateFavorite: (id, updates) =>
+      setFavorites((prev) =>
+        prev.map((f) => {
+          if (f.id !== id) return f;
+          // Guard the chapter here too: a bad value must never reach storage/sync.
+          const chapter =
+            typeof updates.chapter === 'number' &&
+            Number.isInteger(updates.chapter) &&
+            updates.chapter >= 1 &&
+            updates.chapter <= TOTAL_CHAPTERS
+              ? updates.chapter
+              : f.chapter;
+          return { ...f, chapter, name: updates.name === undefined ? f.name : updates.name.trim() };
+        })
+      ),
     isFavorited: (chapter) => favorites.some((f) => f.chapter === chapter),
     reorderFavorites: (orderedIds) =>
       setFavorites((prev) => {

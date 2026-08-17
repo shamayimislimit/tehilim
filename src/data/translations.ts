@@ -34,6 +34,18 @@ export const translations = {
     french: 'Ex : Pour Yehouda, Pour la guérison, Bénédiction…',
     english: 'E.g. For Yehuda, For healing, Blessing…',
   } as Trans,
+  editFavorite: { hebrew: 'עריכת מועדף', french: 'Modifier le favori', english: 'Edit favorite' } as Trans,
+  favoriteChapter: { hebrew: 'מספר פרק', french: 'Numéro de chapitre', english: 'Chapter number' } as Trans,
+  invalidChapter: {
+    hebrew: 'יש להזין מספר פרק בין 1 ל‑150',
+    french: 'Numéro de chapitre entre 1 et 150',
+    english: 'Chapter number between 1 and 150',
+  } as Trans,
+  duplicateFavorite: {
+    hebrew: 'הפרק הזה כבר שמור באותו שם',
+    french: 'Ce chapitre est déjà enregistré sous ce nom',
+    english: 'This chapter is already saved under this name',
+  } as Trans,
   save: { hebrew: 'שמור', french: 'Enregistrer', english: 'Save' } as Trans,
   cancel: { hebrew: 'ביטול', french: 'Annuler', english: 'Cancel' } as Trans,
   emptyFavorites: {
