@@ -171,15 +171,14 @@ export const closingPrayerFor = (chapter: number): Prayer | null => {
           french: `Prière après ${b.fr}`,
           english: `Prayer after ${b.en}`,
         };
+  // No מי יתן מציון here: that verse belongs to the section-end verses
+  // (SectionClosing), not to the book's Yehi Ratzon rendered inline right after
+  // the book-ending psalm. Only `prayerAfter` (the standalone prayer) keeps it.
   const parts = [
-    closingIntroVerse,
-    '@@SEP@@', // distinct divider between the מי יתן מציון verse and the Yehi Ratzon
     'יְהִי רָצוֹן מִלְּפָנֶיךָ יְיָ אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ שֶׁתְּרַחֵם עָלֵינוּ,',
     `@@BOOKMAP:${idx}@@`,
   ];
   const partsP = [
-    prayersPhonetic.closingIntroVerse,
-    '@@SEP@@',
     prayersPhonetic.leadLine,
     `@@BOOKMAP:${idx}@@`,
   ];
