@@ -61,13 +61,25 @@ if (violations.length) {
   process.exit(1);
 }
 
+/**
+ * Ketiv/qere: the source writes both, `(כתיב) [קרי]` (either order). The ketiv is
+ * unvocalised, so transliterating it yields noise ("hvchr"); and what one reads
+ * aloud is the qere anyway. Phonetic keeps the qere only, without its brackets.
+ */
+const qereOnly = (v) =>
+  v
+    .replace(/\([^)]*\)/g, '')
+    .replace(/\[([^\]]*)\]/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
 // ── Generate { [chapter]: string[] } ──
 const out = {};
 let verseCount = 0;
 for (const c of data.chapters) {
   out[c.chapter] = c.verses.map((v) => {
     verseCount++;
-    return toPhonetic(v);
+    return toPhonetic(qereOnly(v));
   });
 }
 
