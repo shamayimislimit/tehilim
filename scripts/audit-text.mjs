@@ -1,18 +1,22 @@
 /**
- * Fidelity audit of src/data/tehilim.json against its reference edition,
- * Sefaria's "Miqra according to the Masorah" (Aleppo / Wikisource) — the very
- * edition named in the file's `source` field.
+ * Fidelity gate for src/data/tehilim.json against its reference edition,
+ * Sefaria's "Miqra according to the Masorah" (Aleppo / Wikisource) — the edition
+ * named in the file's own `source` field.
  *
- * Reports, per verse:
- *   - characters no font can render (U+FFFD), i.e. encoding damage;
- *   - any divergence in letters / nikkud / te'amim from the reference.
+ * Every verse must match the reference EXACTLY, code point for code point,
+ * spacing included. The only transformations applied to the reference are the
+ * removal of its HTML/layout markup:
+ *   &thinsp; → U+2009 (the thin space the reference puts around the paseq ׀)
+ *   &nbsp;   → U+00A0
+ *   <b>/<small>/<big>/kq/implicit-maqaf spans → unwrapped (styling only)
+ *   mam-spi-pe {פ} + <br>  → dropped (page layout, not text)
+ *   mam-spi-invnun ׆       → kept inline at the head of the verse (Psalm 107)
  *
- * Purely typographic differences are neutralised before comparing: the reference
- * carries HTML markup, {פ}/{ס} section marks, an inverted-nun paratext span, and
- * spaces around the paseq (this corpus glues it to the preceding word).
+ * The reference is deliberately NOT NFC-normalised: its combining-mark order is
+ * the Masoretic one and must be preserved byte for byte.
  *
- * Usage: node scripts/audit-text.mjs        (needs network access to sefaria.org)
- * Exit code 1 if anything diverges — usable as a gate.
+ * Usage: node scripts/audit-text.mjs      (needs network access to sefaria.org)
+ * Exit 0 = corpus identical to the reference; 1 = divergence; 2 = unreachable.
  */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -23,60 +27,59 @@ const VERSION = 'Miqra according to the Masorah';
 
 const data = JSON.parse(readFileSync(join(__dirname, '..', 'src', 'data', 'tehilim.json'), 'utf8'));
 
-const url = `https://www.sefaria.org/api/v3/texts/Psalms?version=hebrew|${encodeURIComponent(VERSION)}`;
-const res = await fetch(url);
+const res = await fetch(
+  `https://www.sefaria.org/api/v3/texts/Psalms?version=hebrew|${encodeURIComponent(VERSION)}`
+);
 if (!res.ok) {
-  console.error(`✗ Sefaria unreachable (HTTP ${res.status}) — audit skipped`);
+  console.error(`✗ Sefaria injoignable (HTTP ${res.status}) — audit non exécuté`);
   process.exit(2);
 }
 const ref = (await res.json()).versions[0].text;
 
-/** Reference markup → plain verse text. */
-const cleanRef = (s) =>
+/** Reference markup → plain verse text, in this corpus' conventions. */
+export const cleanReference = (s) =>
   s
-    .replace(/<span class="mam-spi-[^"]*">.*?<\/span>/g, '') // {פ}/{ס}/inverted-nun paratext
-    .replace(/<br>/g, ' ')
+    .replace(/<span class="mam-spi-invnun">׆<\/span>&nbsp;/g, '׆\u00A0')
+    .replace(/<span class="mam-spi-[^"]*">.*?<\/span>/g, '')
+    .replace(/<br\s*\/?>/g, '')
     .replace(/<[^>]+>/g, '')
-    .replace(/&thinsp;|&nbsp;/g, ' ')
-    .replace(/\{[פסש]\}/g, '');
+    .replace(/&thinsp;/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/^[\s  ]+|[\s  ]+$/g, '');
 
-/** Compare on content only: spacing and invisible joiners carry no meaning here. */
-const cmp = (s) => s.normalize('NFC').replace(/͏/g, '').replace(/\s+/g, '');
+const cp = (s, k) => (s[k] ? 'U+' + s.codePointAt(k).toString(16).toUpperCase().padStart(4, '0') : '∅');
 
-/**
- * Psalm 107 carries the inverted nun (׆) inline at the head of the verse, where
- * the reference keeps it as a separate paratext span. Kept on purpose — it is a
- * Masoretic mark, not damage — so it must not count as a divergence.
- */
-const INVERTED_NUN = /^׆\s*/;
-
+let verses = 0, exact = 0;
 const damaged = [];
 const diverging = [];
-const invertedNun = [];
+const missing = [];
 
 for (const c of data.chapters) {
   const refChapter = ref[c.chapter - 1] ?? [];
+  if (refChapter.length !== c.verses.length) {
+    missing.push(`Ps ${c.chapter}: ${c.verses.length} versets ici / ${refChapter.length} dans la référence`);
+  }
   c.verses.forEach((verse, i) => {
+    verses++;
     const at = `${c.chapter}:${i + 1}`;
     if (verse.includes('�')) damaged.push(at);
-    if (INVERTED_NUN.test(verse)) invertedNun.push(at);
-    const a = cmp(verse.replace(INVERTED_NUN, ''));
-    const b = cmp(cleanRef(refChapter[i] ?? ''));
-    if (!b) return; // reference missing this verse — nothing to compare against
-    if (a !== b) {
-      let p = 0;
-      while (p < a.length && p < b.length && a[p] === b[p]) p++;
-      const cp = (s, k) => (s[k] ? 'U+' + s.codePointAt(k).toString(16).toUpperCase().padStart(4, '0') : '∅');
-      diverging.push(`${at}  ${cp(a, p)} → ${cp(b, p)}   …${a.slice(Math.max(0, p - 8), p + 8)} | ${b.slice(Math.max(0, p - 8), p + 8)}…`);
-    }
+    const expected = cleanReference(refChapter[i] ?? '');
+    if (!expected) { missing.push(at); return; }
+    if (verse === expected) { exact++; return; }
+    let p = 0;
+    while (p < verse.length && p < expected.length && verse[p] === expected[p]) p++;
+    diverging.push(
+      `${at}  ${cp(verse, p)} → ${cp(expected, p)}   …${verse.slice(Math.max(0, p - 8), p + 8)} | ${expected.slice(Math.max(0, p - 8), p + 8)}…`
+    );
   });
 }
 
 console.log(`Référence : ${VERSION}`);
-console.log(`Versets   : ${data.chapters.reduce((n, c) => n + c.verses.length, 0)}`);
+console.log(`Versets   : ${verses} — identiques au caractère près : ${exact}`);
 console.log(`Caractères illisibles (U+FFFD) : ${damaged.length}${damaged.length ? ' → ' + damaged.join(', ') : ''}`);
 console.log(`Versets divergents             : ${diverging.length}`);
-diverging.forEach((d) => console.log('  ' + d));
-console.log(`Nun inversé (׆) conservé       : ${invertedNun.join(', ') || '—'}`);
+diverging.slice(0, 50).forEach((d) => console.log('  ' + d));
+if (diverging.length > 50) console.log(`  … et ${diverging.length - 50} autres`);
+if (missing.length) console.log(`Versets sans équivalent        : ${missing.join(', ')}`);
 
-process.exit(damaged.length || diverging.length ? 1 : 0);
+process.exit(damaged.length || diverging.length || missing.length ? 1 : 0);

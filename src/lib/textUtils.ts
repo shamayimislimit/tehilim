@@ -10,7 +10,14 @@
 const CANTILLATION = /[֑-ֽֿ֯׀׃׆]/g;
 const NIKKUD = /[ְ-ׇּׁׂׅׄ]/g;
 
-export const stripCantillation = (s: string) => s.replace(CANTILLATION, '');
+/**
+ * The source frames the paseq (׀) with thin spaces and the inverted nun (׆) with
+ * a no-break space. Dropping those marks would leave the spaces stacked, so runs
+ * of whitespace collapse back to a single one.
+ */
+const collapseSpaces = (s: string) => s.replace(/\s{2,}/g, ' ').trim();
+
+export const stripCantillation = (s: string) => collapseSpaces(s.replace(CANTILLATION, ''));
 export const stripNikkud = (s: string) => s.replace(NIKKUD, '');
 
 export const transformVerse = (
