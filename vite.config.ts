@@ -51,7 +51,9 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webmanifest}'],
+        // woff2 included: the cantillation fonts are bundled, so they must be
+        // precached or offline reading falls back to a font without ta'amim.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webmanifest,woff2}'],
         navigateFallback: '/tehilim/index.html',
         // Don't serve the default index.html for instance ROOT urls
         // (/tehilim/<slug>/) — let them hit the network so the per-slug

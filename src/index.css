@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cantillated Hebrew — self-hosted Culmus fonts (GPL-2 with font exception,
+   see assets/fonts/NOTICE.md). Both carry the full ta'amim set and place the
+   meteg clearly apart from the vowel, unlike the Noto Hebrew families where it
+   reads as a qamats. Subset to Hebrew + Latin basics: 26 KB + 11 KB. */
+@font-face {
+  font-family: 'Keter YG';
+  src: url('./assets/fonts/keter-yg.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Simple CLM';
+  src: url('./assets/fonts/simple-clm.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Sober memorial palette — slate / steel blue / silver.
    All colors MUST be HSL. */
 

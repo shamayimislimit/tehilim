@@ -14,14 +14,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        // Noto *Hebrew fallbacks cover full nikkud + cantillation (טעמים) so
-        // marks the primary fonts lack don't fall back to a mis-sized system font.
-        assistant: ['Assistant', 'Noto Sans Hebrew', 'sans-serif'],
-        frank: ['Frank Ruhl Libre', 'Noto Serif Hebrew', 'serif'],
-        david: ['David Libre', 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'serif'],
+        // The Culmus fallbacks cover full nikkud + cantillation (טעמים) so marks
+        // the primary fonts lack don't fall back to a mis-sized system font.
+        assistant: ['Assistant', 'Simple CLM', 'sans-serif'],
+        frank: ['Frank Ruhl Libre', 'Keter YG', 'serif'],
+        david: ['David Libre', 'Frank Ruhl Libre', 'Keter YG', 'serif'],
         // Complete Hebrew fonts (nikkud + cantillation) used when טעמים are shown.
-        'noto-serif-he': ['Noto Serif Hebrew', 'serif'],
-        'noto-sans-he': ['Noto Sans Hebrew', 'sans-serif'],
+        'taamim-serif': ['Keter YG', 'serif'],
+        'taamim-sans': ['Simple CLM', 'sans-serif'],
         cormorant: ['Cormorant Garamond', 'serif'],
         rubik: ['Rubik', 'sans-serif'],
       },
