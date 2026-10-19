@@ -82,3 +82,18 @@ export const getMonthlySchedule = (): ScheduleDay[] =>
       };
     })
     .sort((a, b) => a.index - b.index);
+
+/** The 5 books of Tehilim (traditional division, each closing with a doxology). */
+const BOOKS: { label: string; range: string }[] = [
+  { label: 'ספר ראשון', range: '1-41' },
+  { label: 'ספר שני', range: '42-72' },
+  { label: 'ספר שלישי', range: '73-89' },
+  { label: 'ספר רביעי', range: '90-106' },
+  { label: 'ספר חמישי', range: '107-150' },
+];
+
+export const getBooksSchedule = (): ScheduleDay[] =>
+  BOOKS.map((b, i) => {
+    const segments = parseSegments(b.range);
+    return { index: i + 1, label: b.label, chapters: distinctChapters(segments), segments, range: b.range };
+  });

@@ -12,6 +12,7 @@ import {
   CalendarDays,
   CalendarRange,
   Hash,
+  Library,
   Star,
   Sparkles,
   ChevronRight,
@@ -56,6 +57,12 @@ const Home = () => {
       Icon: CalendarRange,
       title: t('modeMonth', language),
       desc: t('finishInMonth', language),
+    },
+    {
+      to: '/books',
+      Icon: Library,
+      title: t('modeBooks', language),
+      desc: t('booksDesc', language),
     },
     {
       to: '/perek',

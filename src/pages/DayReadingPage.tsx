@@ -4,13 +4,13 @@ import { useAppSettings } from '@/components/Layout';
 import { useInstanceLink } from '@/context/instance';
 import { PageHeader } from '@/components/PageHeader';
 import { DayContinuousReader } from '@/components/DayContinuousReader';
-import { getMonthlySchedule, getWeeklySchedule } from '@/data/tehilimData';
+import { getBooksSchedule, getMonthlySchedule, getWeeklySchedule } from '@/data/tehilimData';
 import { getTodayInfo } from '@/lib/hebrewDate';
-import { t, dayName } from '@/data/translations';
+import { t, dayName, bookTitle } from '@/data/translations';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 interface DayReadingPageProps {
-  cycle: 'week' | 'month';
+  cycle: 'week' | 'month' | 'books';
 }
 
 const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
@@ -29,10 +29,14 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
     else navigate(iLink(`/${cycle}`));
   };
 
-  const days = useMemo(() => (cycle === 'week' ? getWeeklySchedule() : getMonthlySchedule()), [cycle]);
-  const max = cycle === 'week' ? 7 : 30;
+  const days = useMemo(
+    () => (cycle === 'week' ? getWeeklySchedule() : cycle === 'month' ? getMonthlySchedule() : getBooksSchedule()),
+    [cycle]
+  );
+  const max = cycle === 'week' ? 7 : cycle === 'month' ? 30 : 5;
   const today = useMemo(() => getTodayInfo(language), [language]);
-  const todayIndex = cycle === 'week' ? today.weekday : Math.min(today.monthDay, 30);
+  // Books have no "today" reading
+  const todayIndex = cycle === 'week' ? today.weekday : cycle === 'month' ? Math.min(today.monthDay, 30) : -1;
 
   if (!Number.isInteger(day) || day < 1 || day > max) {
     return <Navigate to={iLink(`/${cycle}`)} replace />;
@@ -45,7 +49,9 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
   const title =
     cycle === 'week'
       ? language === 'hebrew' ? sched.label : dayName(day - 1, language)
-      : `${t('day', language)} ${language === 'hebrew' ? sched.label : day}`;
+      : cycle === 'books'
+        ? bookTitle(day, language)
+        : `${t('day', language)} ${language === 'hebrew' ? sched.label : day}`;
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'}>
@@ -89,7 +95,7 @@ const DayReadingPage = ({ cycle }: DayReadingPageProps) => {
           </Link>
         </div>
 
-        <DayContinuousReader segments={sched.segments} settings={settings} />
+        <DayContinuousReader segments={sched.segments} settings={settings} kind={cycle === 'books' ? 'book' : 'day'} />
       </main>
     </div>
   );

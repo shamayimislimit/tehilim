@@ -10,6 +10,7 @@ import { InstanceRoute } from "@/context/instance";
 import Home from "./pages/Home";
 import DayPickerPage from "./pages/DayPickerPage";
 import DayReadingPage from "./pages/DayReadingPage";
+import BooksPage from "./pages/BooksPage";
 import PerekListPage from "./pages/PerekListPage";
 import PerekReadingPage from "./pages/PerekReadingPage";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -41,6 +42,8 @@ const instanceRoutes = () => (
     <Route path="week/:day" element={<DayReadingPage cycle="week" />} />
     <Route path="month" element={<DayPickerPage cycle="month" />} />
     <Route path="month/:day" element={<DayReadingPage cycle="month" />} />
+    <Route path="books" element={<BooksPage />} />
+    <Route path="books/:day" element={<DayReadingPage cycle="books" />} />
     <Route path="perek" element={<PerekListPage />} />
     <Route path="perek/:n" element={<PerekReadingPage />} />
     <Route path="favorites" element={<FavoritesPage />} />

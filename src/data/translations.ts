@@ -60,12 +60,17 @@ export const translations = {
   } as Trans,
   pickChapter: { hebrew: 'בחר פרק', french: 'Choisir un chapitre', english: 'Pick a chapter' } as Trans,
   chaptersOfTheDay: { hebrew: 'פרקי היום', french: 'Chapitres du jour', english: "Today's chapters" } as Trans,
+  chaptersOfTheBook: { hebrew: 'פרקי הספר', french: 'Chapitres du livre', english: 'Chapters of the book' } as Trans,
   todayReading: { hebrew: 'קריאת היום', french: 'Lecture du jour', english: "Today's reading" } as Trans,
   whatToRead: { hebrew: 'מה תרצו לקרוא?', french: 'Que souhaitez-vous lire ?', english: 'What would you like to read?' } as Trans,
   finishInWeek: { hebrew: 'כל הספר בשבעה ימים', french: 'Tout le livre en 7 jours', english: 'The whole book in 7 days' } as Trans,
   finishInMonth: { hebrew: 'כל הספר בשלושים יום', french: 'Tout le livre en 30 jours', english: 'The whole book in 30 days' } as Trans,
   numberDesc: { hebrew: 'בחירת פרק מתוך 150', french: 'Choisir un chapitre parmi 150', english: 'Pick one of 150 chapters' } as Trans,
   favoritesDesc: { hebrew: 'הפרקים שבחרתם', french: 'Vos tehilim choisis', english: 'Your chosen tehilim' } as Trans,
+  modeBooks: { hebrew: 'חמשת הספרים', french: 'Les 5 livres', english: 'The 5 books' } as Trans,
+  booksDesc: { hebrew: 'קריאה לפי ספר, מראשון עד חמישי', french: 'Lire livre par livre, du 1ᵉʳ au 5ᵉ', english: 'Read book by book, 1st to 5th' } as Trans,
+  chooseBook: { hebrew: 'בחרו ספר', french: 'Choisissez un livre', english: 'Choose a book' } as Trans,
+  chaptersCount: { hebrew: 'פרקים', french: 'chapitres', english: 'chapters' } as Trans,
   chooseDay: { hebrew: 'בחרו יום', french: 'Choisissez un jour', english: 'Choose a day' } as Trans,
   back: { hebrew: 'חזרה', french: 'Retour', english: 'Back' } as Trans,
   yehiRatzonHeading: { hebrew: 'יְהִי רָצוֹן', french: 'Yehi Ratzon', english: 'Yehi Ratzon' } as Trans,
@@ -121,3 +126,12 @@ export const dayName = (jsDayIndex: number, language: Language): string => {
     : translations.dayNamesEn;
   return arr[i] ?? '';
 };
+
+const BOOK_ORDINALS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי'];
+const BOOK_ORDINALS_FR = ['1ᵉʳ', '2ᵉ', '3ᵉ', '4ᵉ', '5ᵉ'];
+
+/** Book 1..5 title: "ספר ראשון" / "1ᵉʳ livre" / "Book 1". */
+export const bookTitle = (book: number, language: Language): string =>
+  language === 'hebrew' ? `ספר ${BOOK_ORDINALS_HE[book - 1]}`
+  : language === 'french' ? `${BOOK_ORDINALS_FR[book - 1]} livre`
+  : `Book ${book}`;

@@ -31,7 +31,7 @@ export const DEFAULT_SLUG = '';
  * so a dedication named "week" would be unreachable. Enforced again server-side
  * at instance-creation time (phase 4).
  */
-export const RESERVED_SLUGS = new Set(['week', 'month', 'perek', 'favorites']);
+export const RESERVED_SLUGS = new Set(['week', 'month', 'books', 'perek', 'favorites']);
 
 const defaultInstance: InstanceConfig = {
   slug: DEFAULT_SLUG,

@@ -8,9 +8,11 @@ import { t } from '@/data/translations';
 interface DayContinuousReaderProps {
   segments: ReadingSegment[];
   settings: TehilimSettings;
+  /** 'book' when reading one of the 5 books: labels say "book", not "today". */
+  kind?: 'day' | 'book';
 }
 
-export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderProps) => {
+export const DayContinuousReader = ({ segments, settings, kind = 'day' }: DayContinuousReaderProps) => {
   const language = settings.language;
   // Distinct chapters covered today (a partial-chapter day like 119:1-96 = 1).
   const n = new Set(segments.map((s) => s.chapter)).size;
@@ -27,7 +29,7 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
       <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} textPhonetic={prayerBefore.textPhonetic} settings={settings} />
 
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] font-assistant text-muted-foreground">
-        <span>{t('chaptersOfTheDay', language)}</span>
+        <span>{t(kind === 'book' ? 'chaptersOfTheBook' : 'chaptersOfTheDay', language)}</span>
         <span>{countLabel}</span>
       </div>
 
@@ -45,7 +47,9 @@ export const DayContinuousReader = ({ segments, settings }: DayContinuousReaderP
       </div>
 
       <p className="text-center text-xs font-assistant text-muted-foreground py-2">
-        {language === 'hebrew' ? 'סיום פרקי היום' : language === 'french' ? 'Fin des chapitres du jour' : "End of today's chapters"}
+        {kind === 'book'
+          ? language === 'hebrew' ? 'סיום הספר' : language === 'french' ? 'Fin du livre' : 'End of the book'
+          : language === 'hebrew' ? 'סיום פרקי היום' : language === 'french' ? 'Fin des chapitres du jour' : "End of today's chapters"}
       </p>
 
       {/* Concluding verses (the book Yehi Ratzon renders inline after its psalm) */}
