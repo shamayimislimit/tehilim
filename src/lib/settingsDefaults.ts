@@ -26,4 +26,5 @@ export const buildDefaultSettings = (): TehilimSettings => ({
   showNikkud: config.settings.defaults.showNikkud,
   showVerseNumbers: config.settings.defaults.showVerseNumbers,
   mode: (config.settings.defaults.mode as ReadMode) ?? 'week',
+  bookmarkChapter: null,
 });

@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { TehilimSettings } from '@/types/tehilim';
 import { ChapterBlock } from '@/components/ChapterBlock';
 import { FavoriteToggle } from '@/components/FavoriteToggle';
+import { BookmarkToggle } from '@/components/BookmarkToggle';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -118,11 +119,18 @@ export const ChapterReader = ({ chapter, onChange, settings, prevTarget, nextTar
         </Button>
 
         {showStar && (
-          <FavoriteToggle
-            chapter={chapter}
-            language={settings.language}
-            className="absolute right-0 top-1/2 -translate-y-1/2"
-          />
+          <>
+            <FavoriteToggle
+              chapter={chapter}
+              language={settings.language}
+              className="absolute right-0 top-1/2 -translate-y-1/2"
+            />
+            <BookmarkToggle
+              chapter={chapter}
+              language={settings.language}
+              className="absolute left-0 top-1/2 -translate-y-1/2"
+            />
+          </>
         )}
       </div>
 
@@ -134,7 +142,7 @@ export const ChapterReader = ({ chapter, onChange, settings, prevTarget, nextTar
             transition: animate ? `transform ${SLIDE_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)` : 'none',
           }}
         >
-          <ChapterBlock chapter={chapter} settings={settings} hideTitle hideStar={showStar} />
+          <ChapterBlock chapter={chapter} settings={settings} hideTitle hideStar={showStar} hideBookmark={showStar} />
         </div>
       </div>
     </article>

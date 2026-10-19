@@ -50,4 +50,6 @@ export interface TehilimSettings {
   showNikkud: boolean;
   showVerseNumbers: boolean;
   mode: ReadMode;
+  /** The single "where I stopped" bookmark (one at a time), null when unset. */
+  bookmarkChapter: number | null;
 }

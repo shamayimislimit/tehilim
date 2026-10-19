@@ -27,6 +27,11 @@ export const translations = {
   install: { hebrew: 'התקן', french: 'Installer', english: 'Install' } as Trans,
   favorites: { hebrew: 'מועדפים', french: 'Favoris', english: 'Favorites' } as Trans,
   addToFavorites: { hebrew: 'הוסף למועדפים', french: 'Ajouter aux favoris', english: 'Add to favorites' } as Trans,
+  bookmark: { hebrew: 'סימניה', french: 'Marque-page', english: 'Bookmark' } as Trans,
+  addBookmark: { hebrew: 'סמן כאן את המקום שבו עצרתי', french: 'Marquer où je me suis arrêté(e)', english: 'Mark where I stopped' } as Trans,
+  removeBookmark: { hebrew: 'הסר סימניה', french: 'Retirer le marque-page', english: 'Remove bookmark' } as Trans,
+  bookmarkSaved: { hebrew: 'הסימניה נשמרה בפרק', french: 'Marque-page placé au chapitre', english: 'Bookmark set at chapter' } as Trans,
+  bookmarkRemoved: { hebrew: 'הסימניה הוסרה', french: 'Marque-page retiré', english: 'Bookmark removed' } as Trans,
   removeFromFavorites: { hebrew: 'הסר מהמועדפים', french: 'Retirer des favoris', english: 'Remove' } as Trans,
   favoriteName: { hebrew: 'שם (לא חובה)', french: 'Nom (optionnel)', english: 'Name (optional)' } as Trans,
   favoriteNameHint: {

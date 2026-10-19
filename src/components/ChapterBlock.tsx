@@ -8,6 +8,7 @@ import { usePhonetic } from '@/lib/usePhonetic';
 import { t } from '@/data/translations';
 import { cn } from '@/lib/utils';
 import { FavoriteToggle } from '@/components/FavoriteToggle';
+import { BookmarkToggle } from '@/components/BookmarkToggle';
 import { PrayerBlock } from '@/components/PrayerBlock';
 import { PSALM_119_CHAPTER, isLetterStart, letterForVerse } from '@/data/psalm119Letters';
 import { isBookEnd, closingPrayerFor } from '@/data/prayers';
@@ -25,9 +26,11 @@ interface ChapterBlockProps {
   hideTitle?: boolean;
   /** Hide the favourite star (used when the surrounding nav bar renders it instead). */
   hideStar?: boolean;
+  /** Hide the bookmark (used when the surrounding nav bar renders it instead). */
+  hideBookmark?: boolean;
 }
 
-export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false, hideStar = false }: ChapterBlockProps) => {
+export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, toVerse, hideTitle = false, hideStar = false, hideBookmark = false }: ChapterBlockProps) => {
   const chap = getChapter(chapter);
   const { language, prayerFont, fontSize, showCantillation, showNikkud, showVerseNumbers, phoneticMode } = settings;
 
@@ -89,6 +92,14 @@ export const ChapterBlock = ({ chapter, settings, compact = false, fromVerse, to
         )}
         {!compact && !hideStar && (
           <FavoriteToggle chapter={chapter} language={language} className="absolute top-0.5 end-0" />
+        )}
+        {/* Opposite the star when it is shown here, else physical left (same side as in the reader nav). */}
+        {!hideBookmark && (
+          <BookmarkToggle
+            chapter={chapter}
+            language={language}
+            className={cn('absolute top-0.5', !compact && !hideStar ? 'start-0' : 'left-0')}
+          />
         )}
       </header>
 

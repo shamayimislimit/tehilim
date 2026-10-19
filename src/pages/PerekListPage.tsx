@@ -27,7 +27,7 @@ const PerekListPage = () => {
         {/* Opening prayer ABOVE the grid */}
         <PrayerBlock title={prayerBefore.title[language]} text={prayerBefore.text} textPhonetic={prayerBefore.textPhonetic} settings={settings} />
 
-        <NumberGrid language={language} onPickChapter={(n) => navigate(iLink(`/perek/${n}`))} />
+        <NumberGrid language={language} bookmarkChapter={settings.bookmarkChapter} onPickChapter={(n) => navigate(iLink(`/perek/${n}`))} />
 
         {/* Closing prayer AFTER the grid — one prayer covering both cases */}
         <PrayerBlock title={prayerAfter.title[language]} text={prayerAfter.text} textPhonetic={prayerAfter.textPhonetic} settings={settings} />
